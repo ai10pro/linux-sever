@@ -1,15 +1,26 @@
 \documentclass[a4paper, 11pt, dvipdfmx]{jsarticle}
 \usepackage[utf8]{inputenc}
 
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{fontawesome5}
 \usepackage{tcolorbox}
 \tcbuselibrary{breakable, listingsutf8}
+
+\usepackage{geometry}
+\geometry{left=20mm,right=20mm,top=20mm,bottom=20mm}
 
 \tcbset{
   colframe=black,
   colback=gray!20,
   fonttitle=\bfseries,
-  sharp corners = downhill,
-  breakable = true
+  sharp corners,
+  breakable = true,
+  boxrule=0.5mm,
+  left=1mm,
+  right=1mm,
+  top=1mm,
+  bottom=1mm,
 }
 \tcbset{
   comandstyle/.style={
@@ -21,24 +32,28 @@
     sharp corners = all,
     breakable = true,
     title=コマンド,
-    boxrule=0.5mm,
-    left=1mm,
-    right=1mm,
-    top=1mm,
-    bottom=1mm,
   },
-  additionalstyle/.style={
-    colframe=red,
-    colback=red!10,
+  yellow/.style={
+    colframe=yellow,
+    colback=yellow!10,
+    coltitle=black,
     fonttitle=\bfseries,
-    rounded corners,
-    breakable = true,
-    boxrule=0.5mm,
-    left=1mm,
-    right=1mm,
-    top=1mm,
-    bottom=1mm
-  }
+    title={\faIcon{exclamation-triangle} 注意}
+  },
+  blue/.style={
+    colframe=blue,
+    colback=blue!10,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={\faIcon{info-circle} 情報}
+  },
+  green/.style={
+    colframe=green!80!black,
+    colback=green!10,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={\faIcon{bookmark} 補足説明}
+  },
 }
 
 \newtcolorbox{commandbox}[2][]{comandstyle, title=#2, #1}
@@ -65,8 +80,30 @@
 
 \section{はじめに}
 
+\section{Linuxとは}
+
 \section{Ubuntuインストール}
-\subsection{ディストリービューしょんの準備}
+\subsection{インストールメディアの準備}
+  \begin{enumerate}
+    \item UbuntuのISOファイルをダウンロード
+    \begin{tcolorbox}[blue]
+      Ubuntu を入手する \href{https://releases.ubuntu.com/20.04/}{\texttt{https://releases.ubuntu.com/20.04/}}\\
+      Ubuntu Desktop 日本語 Remixのダウンロード \href{https://www.ubuntulinux.jp/download/ja-remix}{\texttt{https://www.ubuntulinux.jp/download/ja-remix}}
+    \end{tcolorbox}
+    \item Rufusをダウンロード
+    \begin{tcolorbox}[blue]
+      Rufusを入手する \href{https://rufus.ie/ja/}{\texttt{https://rufus.ie/ja/}}
+    \end{tcolorbox}
+    \item Rufusを起動し、デバイス、ブート選択、イメージ選択を行う\\
+    デバイスにはインストールメディアとするためのUSBを選択する。\\
+    ブート選択では、先ほどダウンロードしたISOファイルを選択する。\\
+    パーティション構成は一般的にはMBRでよい。ただし、Gatewayの場合はGPTを選択する。その他の設定はデフォルトのままでよい。
+      \begin{tcolorbox}[yellow]
+        デバイスを選択する際は注意が必要である。間違えるとPCや外部ストレージのデータが消える可能性があるため、注意が必要である。
+      \end{tcolorbox}
+    \item スタートをクリックし、書き込みを開始する
+  \end{enumerate}
+
 \subsection{Boot Modeの変更}
   \begin{enumerate}
     \item 電源をつけF2を連打しBIOS画面を表示
@@ -97,11 +134,75 @@
     \item SecureをEnableに変更
     \item Securityに移動しErase all Secure Boot Settingを選択し、Boot設定を削除
     \item Select an UEFI file as trusted for executingを選択
-    \item EMMC > EFI > Ubuntu > shimx64.efiを選択
+    \item EMMC \textgreater EFI \textgreater Ubuntu \textgreater shimx64.efiを選択
     \item Boot名を入力し、Enter
     \item Bootに移動しSecure BootをDisableに変更
     \item Securityに移動しSupervisor Passwordを削除
     \item F10で保存して再起動
+    \item ログイン画面になったら成功
   \end{enumerate}
+
+\section{Ubuntuの各種設定・インストール}
+Ubuntu（Linux）はWindowsなどと同様に様々な設定が可能である。以下にはその一部を示すが、適宜自分にあったUbuntu環境を構築することが望ましい。
+\subsection{日本語入力}
+  Ubuntuではデフォルトでキーボードによる日本語入力は対応していない。そのため、以下の手順で日本語入力を可能にする。なお日本語入力には一般に「Mozc」が使用されることが多い。
+  \begin{enumerate}
+    \item ターミナルを開く
+    \item 以下のコマンドを実行
+    \begin{commandbox}{コマンド}
+      \verb|$ sudo apt update|\\
+      \verb|$ sudo apt install ibus-mozc|
+    \end{commandbox}
+    \item 設定 \textgreater キーボード \textgreater 入力ソース \textgreater 日本語（Mozc）を追加
+    \item Windowsキー + Spaceで日本語入力が可能になる\\
+    なお、右上にある「A」をクリックすることで入力ソースを切り替えることができる。
+  \end{enumerate}
+
+\subsection{Vimのインストール}
+  VimはLinux環境で使用されるテキストエディタであり、非常に高機能である。特徴として、ターミナル上で操作するため、マウスを使わずに編集を行う。本手手順書ではsudo権限（後の章にて解説）の必要なファイルの編集などで使用する。標準で搭載されている場合もある。
+  \begin{enumerate}
+    \item ターミナルを開く
+    \item 以下のコマンドを実行
+    \begin{commandbox}{コマンド}
+      \verb|$ sudo apt update|\\
+      \verb|$ sudo apt install vim|
+    \end{commandbox}
+    \item インストールが完了したら、以下コマンドを実行しインストールされているか確認
+    \begin{commandbox}{コマンド}
+      \verb|$ vim --version|
+    \end{commandbox}
+  \end{enumerate}
+
+\subsection{VSCodeのインストール}
+  VSCodeはMicrosoftが提供するオープンソースのコードエディタであり、非常に高機能である。特徴として、拡張機能を追加することで、様々な言語に対応することができる。また、リモート開発機能を使用することで、リモートサーバー上での開発も可能である。
+  \begin{enumerate}
+    \item \href{https://code.visualstudio.com/}{\texttt{https://code.visualstudio.com/}}にアクセスし、ダウンロード
+    \item ダウンロードしたファイルを開く
+    \item インストールを開始
+    \item インストールが完了したら、VSCodeを起動
+  \end{enumerate}
+
+\section{ディレクトリ構造について}
+Linuxではディレクトリ構造がWindowsとは異なる。
+\subsection{ファイルの種類}
+  Linuxで扱われるファイルは以下のように分類される。
+  \begin{itemize}
+    \item ファイル     :テキストファイルとバイナリファイル
+    \item リンクファイル :シンボリックリンクとハードリンク
+    \item 特殊ファイル  :デバイスファイルや隠しファイル
+    \item ディレクトリ  :ファイルを集約するためのWindowsでいうフォルダ
+  \end{itemize}
+  拡張子はWindowsにおいてはアプリケーションの起動に紐づけられていたが、Linuxでは単なるファイル名の一部として認識される。\\
+  Linuxではデバイスファイルがあり、これはハードウェアをファイルとして扱うためのものである。\\
+
+\subsection{ディレクトリ構造}
+  Linuxではディレクトリ構造が以下のようになっている。
+  \begin{itemize}
+    \item / (ルートディレクトリ): すべてのディレクトリの最上位
+    \item /bin: 基本的なコマンドが格納されている
+    \item /etc: 設定ファイルが格納されている
+    \item /home: ユーザーのホームディレクトリが格納されている
+    \item /var: ログファイルなどの可変データが格納されている
+  \end{itemize}
 
 \end{document}
