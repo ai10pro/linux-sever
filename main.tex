@@ -1,0 +1,107 @@
+\documentclass[a4paper, 11pt, dvipdfmx]{jsarticle}
+\usepackage[utf8]{inputenc}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable, listingsutf8}
+
+\tcbset{
+  colframe=black,
+  colback=gray!20,
+  fonttitle=\bfseries,
+  sharp corners = downhill,
+  breakable = true
+}
+\tcbset{
+  comandstyle/.style={
+    colframe=black,
+    colback=black,
+    coltitle=white,
+    coltext=white,
+    fonttitle=\ttfamily,
+    sharp corners = all,
+    breakable = true,
+    title=コマンド,
+    boxrule=0.5mm,
+    left=1mm,
+    right=1mm,
+    top=1mm,
+    bottom=1mm,
+  },
+  additionalstyle/.style={
+    colframe=red,
+    colback=red!10,
+    fonttitle=\bfseries,
+    rounded corners,
+    breakable = true,
+    boxrule=0.5mm,
+    left=1mm,
+    right=1mm,
+    top=1mm,
+    bottom=1mm
+  }
+}
+
+\newtcolorbox{commandbox}[2][]{comandstyle, title=#2, #1}
+
+\usepackage{titlesec}
+\usepackage{tocloft}
+
+% セクション番号の変更
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection 章}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesection.\arabic{subsection}}{1em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesection.\arabic{subsection}.\arabic{subsubsection}}{1em}{}
+
+\begin{document}
+
+\title{Linuxサーバー構築手順書}
+\author{大阪公立大学工業高等専門学校\\
+3年 知能情報コース 5番\\
+}
+\date{\today}
+\maketitle\thispagestyle{empty}
+
+\newpage
+\setcounter{section}{-1}
+
+\section{はじめに}
+
+\section{Ubuntuインストール}
+\subsection{ディストリービューしょんの準備}
+\subsection{Boot Modeの変更}
+  \begin{enumerate}
+    \item 電源をつけF2を連打しBIOS画面を表示
+    \item Securityに移動しSupervisor Passwordを設定
+    \item Bootに移動しBoot ModeをLegacyに変更
+    \item F10で保存して再起動
+    \item F2を連打しBIOS画面を表示
+    \item Bootに移動しBoot Priorityを変更しインストールメディアが入るものを選択
+    \item Boot ModeをUEFIに変更
+    \item SecureBootをDisableに変更
+    \item F10で保存して再起動
+  \end{enumerate}
+\subsection{Ubuntuのインストール}
+  \begin{enumerate}
+    \item 再起動後自動的にBoot Menuが表示される
+    \item Try or Install Ubuntuを選択
+    % \item 以下Ubuntuのインストールを書く　★
+    \item インストールの種類を選択
+    \item インストール先を選択
+    \item キーボードレイアウトを選択
+    \item ユーザー情報を入力
+    \item インストールが完了したら再起動
+  \end{enumerate}
+\subsection{インストール後の再起動}
+  \begin{enumerate}
+    \item 再起動時にBiosに入る
+    \item Bootに移動しBoot Priorityを変更しインストールしたディスクを1番目にする
+    \item SecureをEnableに変更
+    \item Securityに移動しErase all Secure Boot Settingを選択し、Boot設定を削除
+    \item Select an UEFI file as trusted for executingを選択
+    \item EMMC > EFI > Ubuntu > shimx64.efiを選択
+    \item Boot名を入力し、Enter
+    \item Bootに移動しSecure BootをDisableに変更
+    \item Securityに移動しSupervisor Passwordを削除
+    \item F10で保存して再起動
+  \end{enumerate}
+
+\end{document}

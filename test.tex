@@ -1,0 +1,94 @@
+\documentclass[a4paper, 11pt, dvipdfmx]{jsarticle}
+\usepackage[utf8]{inputenc}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable, listingsutf8}
+
+\tcbset{
+  colframe=black,
+  colback=gray!20,
+  fonttitle=\bfseries,
+  sharp corners = downhill,
+  breakable = true
+}
+\tcbset{
+  comandstyle/.style={
+    colframe=black,
+    colback=black,
+    coltitle=white,
+    coltext=white,
+    fonttitle=\ttfamily,
+    sharp corners = all,
+    breakable = true,
+    title=コマンド,
+    boxrule=0.5mm,
+    left=1mm,
+    right=1mm,
+    top=1mm,
+    bottom=1mm,
+  },
+  additionalstyle/.style={
+    colframe=red,
+    colback=red!10,
+    fonttitle=\bfseries,
+    rounded corners,
+    breakable = true,
+    boxrule=0.5mm,
+    left=1mm,
+    right=1mm,
+    top=1mm,
+    bottom=1mm
+  }
+}
+
+\newtcolorbox{commandbox}[2][]{comandstyle, title=#2, #1}
+
+\usepackage{titlesec}
+\usepackage{tocloft}
+
+% セクション番号の変更
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection 章}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesection.\arabic{subsection}}{1em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesection.\arabic{subsection}.\arabic{subsubsection}}{1em}{}
+
+\begin{document}
+
+\title{Linuxサーバー構築手順書}
+\author{大阪公立大学工業高等専門学校\\
+3年 知能情報コース 5番\\
+石見 心人}
+\date{\today}
+\maketitle\thispagestyle{empty}
+
+\newpage
+\setcounter{section}{0}
+
+\section{はじめに}
+あいうえお
+かきくけこ
+
+さしすせそ
+  \begin{commandbox}{}
+    \verb|$ sudo apt update|\\
+    \verb|$ sudo apt upgrade|
+  \end{commandbox}
+
+  \begin{tcolorbox}[additionalstyle]
+    あいうえお
+  \end{tcolorbox}
+
+\section{Terminal入力の例}
+  \begin{commandbox}{Apacheの起動と有効化}
+\begin{lstlisting}
+sudo systemctl start apache2
+sudo systemctl enable apache2
+\end{lstlisting}
+  \end{commandbox}
+
+  \begin{commandbox}{Apacheの起動}
+\begin{lstlisting}
+sudo systemctl start apache2
+\end{lstlisting}
+  \end{commandbox}
+
+\end{document}
