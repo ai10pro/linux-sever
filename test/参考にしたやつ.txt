@@ -4,3 +4,9 @@ https://qiita.com/takuya66520126/items/8bb760bf99c4e25364e3
 Vim
 https://qiita.com/tommy_g/items/3ad4b26ccb4893f2760e
 
+ディレクトリ構造
+https://qiita.com/yuta_931214/items/7cd5df422e05cf07c2f8
+
+面白コマンド
+https://qiita.com/to-fmak/items/ea345839f394db781bd0
+

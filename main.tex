@@ -1,6 +1,7 @@
 \documentclass[a4paper, 11pt, dvipdfmx]{jsarticle}
 \usepackage[utf8]{inputenc}
 
+\usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{bookmark}
 \usepackage{fontawesome5}
@@ -9,6 +10,10 @@
 
 \usepackage{geometry}
 \geometry{left=20mm,right=20mm,top=20mm,bottom=20mm}
+
+\usepackage{chngcntr}
+\usepackage{listings}
+\usepackage{float} % 追加
 
 \tcbset{
   colframe=black,
@@ -74,6 +79,8 @@
 }
 \date{\today}
 \maketitle\thispagestyle{empty}
+\newpage
+\tableofcontents
 
 \newpage
 \setcounter{section}{-1}
@@ -180,7 +187,7 @@ Linuxではディレクトリ構造がWindowsとは異なる。
   \end{enumerate}
 
 \section{Ubuntuの各種設定・インストール}
-Ubuntu（Linux）はWindowsなどと同様に様々な設定が可能である。以下にはその一部を示すが、適宜自分にあったUbuntu環境を構築することが望ましい。
+Ubuntu（Linux）はWindowsなどと同様に様々な設定が可能である。以下にはその一部を示すが、適宜自分にあったUbuntu環境を構築することが望ましい。練習ついでにいろいろな物を入れてみるとよい。
 \subsection{日本語入力}
   Ubuntuではデフォルトでキーボードによる日本語入力は対応していない。そのため、以下の手順で日本語入力を可能にする。なお日本語入力には一般に「Mozc」が使用されることが多い。
   \begin{enumerate}
@@ -218,6 +225,75 @@ Ubuntu（Linux）はWindowsなどと同様に様々な設定が可能である�
     \item インストールを開始
     \item インストールが完了したら、VSCodeを起動
   \end{enumerate}
+
+\subsection{slのインストール（お遊び）} 
+  slは、タイプミスでよく入力される「ls」コマンドを実行すると、蒸気機関車が走るアニメーションが表示されるコマンドである。インストールの練習として入れてみるとよい。
+  \begin{enumerate}
+    \item ターミナルを開く
+    \item 以下のコマンドを実行
+    \begin{commandbox}{コマンド}
+      \verb|$ sudo apt update|\\
+      \verb|$ sudo apt install sl|
+    \end{commandbox}
+    \item 以下のコマンドを実行
+    \begin{commandbox}{コマンド}
+      \verb|$ sl|
+    \end{commandbox}
+  \end{enumerate}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/linux-server/3_4-sl.png}
+    \caption{slの実行結果}
+    \label{fig:sl}
+  \end{figure}
+  実行時にオプションがあるので、気が向いたら調べて遊んでみるとよい。
+
+\subsection{cmatrixのインストール（お遊び）}
+  cmatrixは、映画「マトリックス」に登場するコードのような文字列が画面上を流れるアニメーションを表示するコマンドである。ハッカーみたいになれるのでなりたい人は入れるとよい。
+  \begin{enumerate}
+    \item ターミナルを開く
+    \item 以下のコマンドを実行
+    \begin{commandbox}{コマンド}
+      \verb|$ sudo apt update|\\
+      \verb|$ sudo apt install cmatrix|
+    \end{commandbox}
+    \item 以下のコマンドを実行
+    \begin{commandbox}{コマンド}
+      \verb|$ cmatrix|
+    \end{commandbox}
+  \end{enumerate}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/linux-server/3_5-cmatrix.png}
+    \caption{cmatrixの実行結果}
+    \label{fig:cmatrix}
+  \end{figure}
+
+\section{Linuxの基本コマンド}
+
+\section{パーミッション}
+
+\section{環境変数}
+
+\section{テキストエディタ}
+
+\section{ネットワーク設定}
+
+\section{ユーザー管理}
+
+\section{SSH}
+
+\section{基本的なサーバー管理}
+
+\section{Webサーバーの構築}
+
+\section{Dockerを使用した環境構築や運用}
+
+\section{終わりに}
+
+
+
+
 
 
 \end{document}
