@@ -270,7 +270,119 @@ Ubuntu（Linux）はWindowsなどと同様に様々な設定が可能である�
   \end{figure}
 
 \section{Linuxの基本コマンド}
+サーバー上でのシステム操作は一般的にターミナルを用いてコマンド入力により操作を行うことが多い。この章ではLinuxの基本コマンドとして紹介するが、一部コマンドはWindowsでも使用できる。ただし、WindowsのコマンドはLinuxとは異なるため注意が必要である。\\
+  コマンドは一般的に以下のように入力する。
+\begin{commandbox}{コマンドの入力方法}
+  \verb|$ {コマンド名} {オプション} {引数}|
+\end{commandbox}
 
+\subsection{よく使うコマンド一覧}
+\subsubsection{ファイルやディレクトリの操作}
+\begin{itemize}
+  \item ls : ファイルやディレクトリの一覧を表示する\\
+  オプションなしの場合、カレントディレクトリのファイルやディレクトリの一覧を表示する。
+  \begin{commandbox}{コマンド}
+    \verb|$ ls|
+    \verb|bin |
+  \end{commandbox}
+  \item cd : カレントディレクトリを移動する\\
+  ディレクトリ名の場所にカレントディレクトリを移動する。
+  \begin{commandbox}{コマンド}
+    \verb|$ cd {ディレクトリ名}|\\\\
+    \verb|# ルートディレクトリへの移動|\\
+    \verb|$ cd /|
+  \end{commandbox}
+  \item pwd : 現在のディレクトリのパスを表示する
+  \begin{commandbox}{コマンド}
+    \verb|$ pwd|\\\\
+    \verb|例：/homeでの実行結果|\\
+    \verb|/home|
+  \end{commandbox}
+  \item mkdir : ディレクトリを作成する\\
+  pathに指定したディレクトリを作成する。
+  \begin{commandbox}{コマンド}
+    \verb|$ mkdir {ディレクトリ名}|\\\\
+    \verb|例：testディレクトリを作成する|\\
+    \verb|$ mkdir test|
+  \end{commandbox}
+  \item rm : ファイルやディレクトリを削除する\\
+  一部ファイルはsudo権限が必要である。
+  \begin{commandbox}{コマンド}
+    \verb|$ rm {ファイル名}|\\\\
+    \verb|例：test.txtを削除する|\\
+    \verb|$ rm test.txt|
+  \end{commandbox}
+  \item rmdir : ディレクトリを削除する\\
+  ディレクトリ内にファイルがある場合は削除できない。
+  \begin{commandbox}{コマンド}
+    \verb|$ rmdir {ディレクトリ名}|\\\\
+    \verb|例：testディレクトリを削除する|\\
+    \verb|$ rmdir test|
+  \end{commandbox}
+  \item cp : ファイルやディレクトリをコピーする\\
+  copyであるため元のファイルは残る。
+  \begin{commandbox}{コマンド}
+    \verb|$ cp {コピー元} {コピー先}|\\\\
+    \verb|例：test.txtをtest2.txtにコピーする|\\
+    \verb|$ cp test.txt test2.txt|
+  \end{commandbox}
+  \item mv : ファイルやディレクトリを移動する\\
+  moveであるため元のファイルは消える。
+  \begin{commandbox}{コマンド}
+    \verb|$ mv {移動元} {移動先}|\\\\
+    \verb|例：test.txtをtest2.txtに移動する|\\
+    \verb|$ mv test.txt test2.txt|
+  \end{commandbox}
+  \item find : ファイルを検索する
+  \begin{commandbox}{コマンド}
+    \verb|$ find {検索先} -name {検索ファイル名}|
+  \end{commandbox}
+  \item touch : ファイルを作成する
+  \begin{commandbox}{コマンド}
+    \verb|$ touch {ファイル名}|\\\\
+    \verb|例：test.txtファイルを作成する|\\
+    \verb|$ touch test.txt|
+  \end{commandbox}
+
+  \item cat : ファイルの内容を表示する\\
+  ファイルの内容をターミナル上でスクロールする形で表示する。
+  \begin{commandbox}{コマンド}
+    \verb|$ cat {ファイル名}|
+  \end{commandbox}
+  \item less : ファイルの内容をページ単位で表示する
+  スペースキーで次のページ、qキーで終了する。
+  \begin{commandbox}{コマンド}
+    \verb|$ less {ファイル名}|
+  \end{commandbox}
+  \item head : ファイルの先頭部分を表示する\\
+  ファイルの先頭部分を表示する。
+  \begin{commandbox}{コマンド}
+    \verb|$ head {ファイル名}|
+  \end{commandbox}
+
+  \item tail : ファイルの末尾部分を表示する\\
+\end{itemize}
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|l|}
+    \hline
+    コマンド & 説明 \\ \hline
+    ls & ファイルやディレクトリの一覧を表示する \\ \hline
+    cd & ディレクトリを移動する \\ \hline
+    pwd & 現在のディレクトリを表示する \\ \hline
+    mkdir & ディレクトリを作成する \\ \hline
+    touch & ファイルを作成する \\ \hline
+    cp & ファイルやディレクトリをコピーする \\ \hline
+    mv & ファイルやディレクトリを移動する \\ \hline
+    rm & ファイルやディレクトリを削除する \\ \hline
+    cat & ファイルの内容を表示する \\ \hline
+    less & ファイルの内容をページ単位で表示する \\ \hline
+    head & ファイルの先頭部分を表示する \\ \hline
+    tail & ファイルの末尾部分を表示する \\ \hline
+  \end{tabular}
+  \caption{ファイルやディレクトリの操作コマンド}
+  \label{tab:file-commands}
+\end{table}
 \section{パーミッション}
 
 \section{環境変数}
