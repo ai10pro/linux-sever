@@ -80,7 +80,44 @@
 
 \section{はじめに}
 
-\section{Linuxとは}
+\section{Linuxについて}
+\subsection{ファイルやディレクトリ構造について}
+Linuxではディレクトリ構造がWindowsとは異なる。
+\subsubsection{ファイルの種類}
+  Linuxで扱われるファイルは以下のように分類される。
+  \begin{itemize}
+    \item ファイル     :テキストファイルとバイナリファイル
+    \item リンクファイル :シンボリックリンクとハードリンク
+    \item 特殊ファイル  :デバイスファイルや隠しファイル
+    \item ディレクトリ  :ファイルを集約するためのWindowsでいうフォルダ
+  \end{itemize}
+  拡張子はWindowsにおいてはアプリケーションの起動に紐づけられていたが、Linuxでは単なるファイル名の一部として認識される。\\
+  Linuxではデバイスファイルがあり、これはハードウェアをファイルとして扱うためのものである。\\
+
+  \subsubsection{ディレクトリ構造}
+  Linuxのディレクトリ構造は/(ルート)を起点として以下のディレクトリが主に挙げられる。それらをある程度理解しておくことで各種設定などの変更の際に便利である。\\
+  \begin{table}[h]
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      ディレクトリ & 説明 \\ \hline
+      /root & システム管理者のホームディレクトリ \\ \hline
+      /home & 一般ユーザーのホームディレクトリ \\ \hline
+      /bin & 一般ユーザーでも実行可能なコマンドが含まれるディレクトリ \\ \hline
+      /sbin & sudo権限またはroot権限が必要なコマンドが含まれるディレクトリ \\ \hline
+      /media & USBメモリや外付けHDDなどのデバイスがマウントされるディレクトリ \\ \hline
+      /etc & システムの設定ファイルが含まれるディレクトリ \\ \hline
+      /usr & システム全体で共有されるアプリケーション、ライブラリ、ドキュメントなどが保存されるディレクトリ \\ \hline
+      /lib & ライブラリが保存されるディレクトリ \\ \hline
+      /proc & カーネルやプロセスに関する情報が保存されるディレクトリ \\ \hline
+      /tmp & 一時ファイルが保存されるディレクトリ \\ \hline
+      /var & 変化するデータが保存されるディレクトリ、ログファイルやデータベースなど \\ \hline
+    \end{tabular}
+    \caption{主要なディレクトリとその説明}
+    \label{tab:directories}
+  \end{table}
+  表\ref{tab:directories}に主要なディレクトリとその説明を示す。
+
 
 \section{Ubuntuインストール}
 \subsection{インストールメディアの準備}
@@ -182,27 +219,5 @@ Ubuntu（Linux）はWindowsなどと同様に様々な設定が可能である�
     \item インストールが完了したら、VSCodeを起動
   \end{enumerate}
 
-\section{ディレクトリ構造について}
-Linuxではディレクトリ構造がWindowsとは異なる。
-\subsection{ファイルの種類}
-  Linuxで扱われるファイルは以下のように分類される。
-  \begin{itemize}
-    \item ファイル     :テキストファイルとバイナリファイル
-    \item リンクファイル :シンボリックリンクとハードリンク
-    \item 特殊ファイル  :デバイスファイルや隠しファイル
-    \item ディレクトリ  :ファイルを集約するためのWindowsでいうフォルダ
-  \end{itemize}
-  拡張子はWindowsにおいてはアプリケーションの起動に紐づけられていたが、Linuxでは単なるファイル名の一部として認識される。\\
-  Linuxではデバイスファイルがあり、これはハードウェアをファイルとして扱うためのものである。\\
-
-\subsection{ディレクトリ構造}
-  Linuxではディレクトリ構造が以下のようになっている。
-  \begin{itemize}
-    \item / (ルートディレクトリ): すべてのディレクトリの最上位
-    \item /bin: 基本的なコマンドが格納されている
-    \item /etc: 設定ファイルが格納されている
-    \item /home: ユーザーのホームディレクトリが格納されている
-    \item /var: ログファイルなどの可変データが格納されている
-  \end{itemize}
 
 \end{document}
