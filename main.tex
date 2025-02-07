@@ -18,7 +18,7 @@
 \tcbset{
   colframe=black,
   colback=gray!20,
-  fonttitle=\bfseries,
+  fonttitle=\bfseries\bfseries,
   sharp corners,
   breakable = true,
   boxrule=0.5mm,
@@ -26,17 +26,20 @@
   right=1mm,
   top=1mm,
   bottom=1mm,
+  enlarge top by=1mm, % Adjust the top margin
+  enlarge bottom by=1mm, % Adjust the bottom margin
 }
 \tcbset{
-  comandstyle/.style={
+  terminalstyle/.style={
     colframe=black,
     colback=black,
-    coltitle=white,
+    coltitle=black,
+    colbacktitle=white,
     coltext=white,
     fonttitle=\ttfamily,
-    sharp corners = all,
-    breakable = true,
-    title=コマンド,
+    rounded corners=north,
+    breakable = false,
+    title={\faIcon{terminal} terminal},
   },
   yellow/.style={
     colframe=yellow,
@@ -61,7 +64,11 @@
   },
 }
 
-\newtcolorbox{commandbox}[2][]{comandstyle, title=#2, #1}
+\newtcolorbox{terminalbox}[1][]{terminalstyle, #1}
+\newtcolorbox{commandbox}[2][]{terminalstyle, title={\faIcon{terminal} #2}, #1}
+\newtcolorbox{hosokubox}[2][]{green, title={\faIcon{bookmark} #2}, #1}
+\newtcolorbox{johobox}[2][]{blue, title={\faIcon{info-circle} #2}, #1}
+\newtcolorbox{attentionbox}[2][]{yellow, title={\faIcon{exclamation-triangle} #2}, #1}
 
 \usepackage{titlesec}
 \usepackage{tocloft}
@@ -193,10 +200,10 @@ Ubuntu（Linux）はWindowsなどと同様に様々な設定が可能である�
   \begin{enumerate}
     \item ターミナルを開く
     \item 以下のコマンドを実行
-    \begin{commandbox}{コマンド}
+    \begin{terminalbox}
       \verb|$ sudo apt update|\\
       \verb|$ sudo apt install ibus-mozc|
-    \end{commandbox}
+    \end{terminalbox}
     \item 設定 \textgreater キーボード \textgreater 入力ソース \textgreater 日本語（Mozc）を追加
     \item Windowsキー + Spaceで日本語入力が可能になる\\
     なお、右上にある「A」をクリックすることで入力ソースを切り替えることができる。
@@ -207,14 +214,14 @@ Ubuntu（Linux）はWindowsなどと同様に様々な設定が可能である�
   \begin{enumerate}
     \item ターミナルを開く
     \item 以下のコマンドを実行
-    \begin{commandbox}{コマンド}
+    \begin{terminalbox}
       \verb|$ sudo apt update|\\
       \verb|$ sudo apt install vim|
-    \end{commandbox}
+    \end{terminalbox}
     \item インストールが完了したら、以下コマンドを実行しインストールされているか確認
-    \begin{commandbox}{コマンド}
+    \begin{terminalbox}
       \verb|$ vim --version|
-    \end{commandbox}
+    \end{terminalbox}
   \end{enumerate}
 
 \subsection{VSCodeのインストール}
@@ -231,14 +238,14 @@ Ubuntu（Linux）はWindowsなどと同様に様々な設定が可能である�
   \begin{enumerate}
     \item ターミナルを開く
     \item 以下のコマンドを実行
-    \begin{commandbox}{コマンド}
+    \begin{terminalbox}
       \verb|$ sudo apt update|\\
       \verb|$ sudo apt install sl|
-    \end{commandbox}
+    \end{terminalbox}
     \item 以下のコマンドを実行
-    \begin{commandbox}{コマンド}
+    \begin{terminalbox}
       \verb|$ sl|
-    \end{commandbox}
+    \end{terminalbox}
   \end{enumerate}
   \begin{figure}[H]
     \centering
@@ -253,14 +260,14 @@ Ubuntu（Linux）はWindowsなどと同様に様々な設定が可能である�
   \begin{enumerate}
     \item ターミナルを開く
     \item 以下のコマンドを実行
-    \begin{commandbox}{コマンド}
+    \begin{terminalbox}
       \verb|$ sudo apt update|\\
       \verb|$ sudo apt install cmatrix|
-    \end{commandbox}
+    \end{terminalbox}
     \item 以下のコマンドを実行
-    \begin{commandbox}{コマンド}
+    \begin{terminalbox}
       \verb|$ cmatrix|
-    \end{commandbox}
+    \end{terminalbox}
   \end{enumerate}
   \begin{figure}[H]
     \centering
@@ -281,110 +288,383 @@ Ubuntu（Linux）はWindowsなどと同様に様々な設定が可能である�
 \begin{itemize}
   \item ls : ファイルやディレクトリの一覧を表示する\\
   オプションなしの場合、カレントディレクトリのファイルやディレクトリの一覧を表示する。
-  \begin{commandbox}{コマンド}
+  \begin{terminalbox}
     \verb|$ ls|
     \verb|bin |
-  \end{commandbox}
+  \end{terminalbox}
+  \begin{hosokubox}{lsコマンドのオプション}
+    -a : 隠しファイルも表示する\\
+    -l : 詳細情報を表示する(パーミッション情報)\\
+    -h : ファイルサイズを見やすい形式で表示する
+  \end{hosokubox}
   \item cd : カレントディレクトリを移動する\\
   ディレクトリ名の場所にカレントディレクトリを移動する。
-  \begin{commandbox}{コマンド}
+  \begin{terminalbox}
     \verb|$ cd {ディレクトリ名}|\\\\
     \verb|# ルートディレクトリへの移動|\\
     \verb|$ cd /|
-  \end{commandbox}
+  \end{terminalbox}
   \item pwd : 現在のディレクトリのパスを表示する
-  \begin{commandbox}{コマンド}
+  \begin{terminalbox}
     \verb|$ pwd|\\\\
     \verb|例：/homeでの実行結果|\\
     \verb|/home|
-  \end{commandbox}
+  \end{terminalbox}
   \item mkdir : ディレクトリを作成する\\
   pathに指定したディレクトリを作成する。
-  \begin{commandbox}{コマンド}
+  \begin{terminalbox}
     \verb|$ mkdir {ディレクトリ名}|\\\\
     \verb|例：testディレクトリを作成する|\\
     \verb|$ mkdir test|
-  \end{commandbox}
+  \end{terminalbox}
   \item rm : ファイルやディレクトリを削除する\\
   一部ファイルはsudo権限が必要である。
-  \begin{commandbox}{コマンド}
+  \begin{terminalbox}
     \verb|$ rm {ファイル名}|\\\\
     \verb|例：test.txtを削除する|\\
     \verb|$ rm test.txt|
-  \end{commandbox}
+  \end{terminalbox}
   \item rmdir : ディレクトリを削除する\\
   ディレクトリ内にファイルがある場合は削除できない。
-  \begin{commandbox}{コマンド}
+  \begin{terminalbox}
     \verb|$ rmdir {ディレクトリ名}|\\\\
     \verb|例：testディレクトリを削除する|\\
     \verb|$ rmdir test|
-  \end{commandbox}
+  \end{terminalbox}
   \item cp : ファイルやディレクトリをコピーする\\
   copyであるため元のファイルは残る。
-  \begin{commandbox}{コマンド}
+  \begin{terminalbox}
     \verb|$ cp {コピー元} {コピー先}|\\\\
     \verb|例：test.txtをtest2.txtにコピーする|\\
     \verb|$ cp test.txt test2.txt|
-  \end{commandbox}
+  \end{terminalbox}
   \item mv : ファイルやディレクトリを移動する\\
   moveであるため元のファイルは消える。
-  \begin{commandbox}{コマンド}
+  \begin{terminalbox}
     \verb|$ mv {移動元} {移動先}|\\\\
     \verb|例：test.txtをtest2.txtに移動する|\\
     \verb|$ mv test.txt test2.txt|
-  \end{commandbox}
+  \end{terminalbox}
   \item find : ファイルを検索する
-  \begin{commandbox}{コマンド}
+  \begin{terminalbox}
     \verb|$ find {検索先} -name {検索ファイル名}|
-  \end{commandbox}
+  \end{terminalbox}
   \item touch : ファイルを作成する
-  \begin{commandbox}{コマンド}
+  \begin{terminalbox}
     \verb|$ touch {ファイル名}|\\\\
     \verb|例：test.txtファイルを作成する|\\
     \verb|$ touch test.txt|
-  \end{commandbox}
+  \end{terminalbox}
+  \item ln:シンボリックリンクの作成\\
+  ファイルやディレクトリに対してシンボリックリンクを作成する。シンボリックリンクとはWindowsにおけるショートカットの役割を果たすものである。
+  \begin{terminalbox}
+    \verb|$ ln -s {リンク元} {リンク先}|\\\\
+    \verb|例：test.txtのシンボリックリンクをデスクトップに作成する|\\
+    \verb|$ ln -s test.txt ~/Desktop/test.txt|
+  \end{terminalbox}
+\end{itemize}
 
+\subsubsection{テキスト操作}
+\begin{itemize}
   \item cat : ファイルの内容を表示する\\
   ファイルの内容をターミナル上でスクロールする形で表示する。
-  \begin{commandbox}{コマンド}
+  \begin{terminalbox}
     \verb|$ cat {ファイル名}|
-  \end{commandbox}
+  \end{terminalbox}
   \item less : ファイルの内容をページ単位で表示する
   スペースキーで次のページ、qキーで終了する。
-  \begin{commandbox}{コマンド}
+  \begin{terminalbox}
     \verb|$ less {ファイル名}|
-  \end{commandbox}
+  \end{terminalbox}
   \item head : ファイルの先頭部分を表示する\\
   ファイルの先頭部分を表示する。
-  \begin{commandbox}{コマンド}
+  \begin{terminalbox}
     \verb|$ head {ファイル名}|
-  \end{commandbox}
-
+  \end{terminalbox}
   \item tail : ファイルの末尾部分を表示する\\
+  ファイルの末尾部分を表示する。
+  \begin{terminalbox}
+    \verb|$ tail {ファイル名}|
+  \end{terminalbox}
+  \item grep : ファイル内の文字列を検索する\\
+  ファイル内の文字列を検索する。
+  \begin{terminalbox}
+    \verb|$ grep {検索文字列} {ファイル名}|\\\\
+    \verb|例：test.txt内に「test」が含まれているか検索する|\\
+    \verb|$ grep test test.txt|
+  \end{terminalbox}
+  \item vi : Vim(テキストエディタ)の起動\\
+  Vimの使用方法については後述する。
+  \begin{terminalbox}
+    \verb|$ vi {ファイル名}|\\\\
+    \verb|例：test.txtを編集する|\\
+    \verb|$ vi test.txt|
+  \end{terminalbox}
+  \item code : VSCode(テキストエディタ)の起動\\
+  ファイル名の部分にはディレクトリも指定できる。その場合、そのディレクトリがVSCodeで開かれる。
+  \begin{terminalbox}
+    \verb|$ code {ファイル名}|\\\\
+    \verb|例：test.txtを編集する|\\
+    \verb|$ code test.txt|
+  \end{terminalbox}
 \end{itemize}
+
+\subsubsection{パーミッションや所有者}
+\begin{itemize}
+  \item chmod : ファイルやディレクトリのパーミッションを変更する\\
+  \begin{terminalbox}
+    \verb|$ chmod {パーミッション} {ファイル名}|\\\\
+    \verb|例：test.txtのパーミッションをrwxr-xr--に変更する|\\
+    \verb|$ chmod 754 test.txt|
+  \end{terminalbox}
+  パーミッションはrwxrwxrwxの形式で表される。rは読み取り、wは書き込み、xは実行を表す。\\
+  例えば、rwxr-xr--は所有者に読み取り、書き込み、実行権限があり、グループに読み取り、実行権限があり、その他に読み取り権限があることを示す。
+  \begin{hosokubox}{パーミッションの指定方法について}
+    パーミッションは数字で指定することができる。\\
+    rwx/rwx/rwxという風に3桁ごとに区切って考える。rを4, wを2, xを1として、それぞれの権限を足し合わせる。したがって、rwxr-xr--は754と表すことができる。\\
+    ※この数字は2進数で処理しており、rwxの時111となり、合計が7となる。
+  \end{hosokubox}
+  \item chown : ファイルやディレクトリの所有者を変更する
+  \begin{terminalbox}
+    \verb|$ chown {所有者}:{グループ} {ファイル名}|\\\\
+    \verb|例：test.txtの所有者をrootに変更する|\\
+    \verb|$ chown root test.txt|
+  \end{terminalbox}
+  グループ名は省略することもできる。その場合、所有者と同じグループになる。
+  \item chgrp : ファイルやディレクトリのグループを変更する
+  \begin{terminalbox}
+    \verb|$ chgrp {グループ} {ファイル名}|\\\\
+    \verb|例：test.txtのグループをrootに変更する|\\
+    \verb|$ chgrp root test.txt|
+  \end{terminalbox}
+\end{itemize}
+
+\subsubsection{ネットワーク管理}
+\begin{itemize}
+  \item ping : ネットワークの接続確認を行う
+  \begin{terminalbox}
+    \verb|$ ping {IPアドレス}|\\\\
+    \verb|例：192.168.0.150にpingを送信する|\\
+    \verb|$ ping 192.168.0.150|
+  \end{terminalbox}
+  \begin{hosokubox}{pingコマンドについて}
+    pingコマンドはネットワーク内の機器の接続確認でよく使用される。Windowsでも同様に使用できる。ただし、Windowsは4回の送信で終了するが、LinuxはCtrl + Cで終了するまで続く。
+  \end{hosokubox}
+  \begin{hosokubox}{pingコマンドのオプション}
+    -c : 指定回数の送信を行う\\
+    -i : 送信間隔を指定する\\
+    -t : 継続的に送信を行う
+  \end{hosokubox}
+  \item ifconfig : ネットワークインターフェースの情報を表示する
+  \begin{terminalbox}
+    \verb|$ ifconfig|
+  \end{terminalbox}
+  出力例は以下の通りである。
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/linux-server/4_1_4-1-ifconfig.png}
+    \caption{ifconfigの出力例}
+    \label{fig:your_image}
+  \end{figure}
+  各種いろいろなネットワークアダプタに関する情報を取得できるがため調べて利用するとよい。ただし、IPアドレス関連にあるinetアドレスは、IPv4のアドレスでありよく使うため覚えておくとよい。
+  \item route : ルーティングテーブルの情報を表示する
+  \begin{johobox}{ルーティングとは}
+    ルーティングとは、ネットワーク上のデータを送信する際に、どの経路を通って送信するかを決定することである。ルーティングテーブルは、どの経路を通って送信するかを示すものである。
+  \end{johobox}
+  \begin{terminalbox}
+    \verb|$ route|
+  \end{terminalbox}
+  \item netstat : ネットワークの接続状況を表示する
+  \begin{terminalbox}
+    \verb|$ netstat|\\\\
+    \verb|例：全ての接続状況を表示する|\\
+    \verb|$ netstat -a|
+  \end{terminalbox}
+  \begin{hosokubox}{netstatコマンドのオプション}
+    -a : 全ての接続状況を表示する\\
+    -t : TCP接続のみを表示する\\
+    -u : UDP接続のみを表示する\\
+    -n : IPアドレスを表示する
+  \end{hosokubox}
+  \item ssh : リモートサーバーに接続する\\
+  詳細については10章で解説する。
+  \begin{terminalbox}
+    \verb|$ ssh {ユーザー名}@{IPアドレス}|
+  \end{terminalbox}
+  \item ftp : ファイル転送プロトコルを使用してファイルを転送する
+  \begin{terminalbox}
+    \verb|$ ftp {IPアドレス}|
+  \end{terminalbox}
+\end{itemize}
+
+\subsubsection{システム管理}
+\begin{itemize}
+  \item top : システムのリソース使用状況を表示する
+  \begin{terminalbox}
+    \verb|$ top|
+  \end{terminalbox}
+  \begin{hosokubox}{topコマンドの操作方法}
+    q : 終了する\\
+    P : CPU使用率でソートする\\
+    M : メモリ使用率でソートする\\
+    T : 実行時間でソートする
+  \end{hosokubox}
+  \item ps : 現在実行中のプロセスの情報を表示する
+  \begin{terminalbox}
+    \verb|$ ps|\\\\
+    \verb|例：全てのプロセスを表示する|\\
+    \verb|$ ps -ef|
+  \end{terminalbox}
+  \begin{hosokubox}{psコマンドのオプション}
+    -e : 全てのプロセスを表示する\\
+    -f : 詳細情報を表示する
+  \end{hosokubox}
+  \item kill : プロセスを終了する
+  \begin{terminalbox}
+    \verb|$ kill {プロセスID}|\\\\
+    \verb|例：プロセスIDが1234のプロセスを終了する|\\
+    \verb|$ kill 1234|
+  \end{terminalbox}
+  \item df : ディスクの使用状況を表示する
+  \begin{terminalbox}
+    \verb|$ df|
+  \end{terminalbox}
+  \item du : ディレクトリのディスク使用量を表示する
+  \begin{terminalbox}
+    \verb|$ du {ディレクトリ名}|\\\\
+    \verb|例：testディレクトリのディスク使用量を表示する|\\
+    \verb|$ du test|
+  \end{terminalbox}
+  \item free : メモリの使用状況を表示する
+  \begin{terminalbox}
+    \verb|$ free|
+  \end{terminalbox}
+  \item uptime : システムの稼働時間を表示する
+  \begin{terminalbox}
+    \verb|$ uptime|
+  \end{terminalbox}
+  \item uname : システム情報を表示する
+  \begin{terminalbox}
+    \verb|$ uname|\\\\
+    \verb|例：システム情報を表示する|\\
+    \verb|$ uname -a|
+  \end{terminalbox}
+  \begin{hosokubox}{unameコマンドのオプション}
+    -a : 全ての情報を表示する\\
+    -s : カーネル名を表示する\\
+    -r : カーネルリリースを表示する\\
+    -v : カーネルバージョンを表示する\\
+    -m : マシンハードウェアを表示する
+  \end{hosokubox}
+\end{itemize}
+
+\subsubsection{ユーザー管理}
+以下コマンドはsudo権限が必要である。\\
+各コマンドの詳細は後述する。
+\begin{itemize}
+  \item useradd / adduser : ユーザーの新規作成
+  \item passwd : パスワードの変更
+  \item usermod / chfn : ユーザー情報の変更
+  \item userdel : ユーザーの削除
+  \item groupadd : グループの新規作成
+  \item who : ログイン中のユーザーを表示する
+\end{itemize}
+
+\subsection{シェルに備わっている機能}
+シェルには様々な機能が備わっており、これらを使用することで作業効率を向上させることができる。以下に代表的な機能を紹介する。
+\subsubsection{入力補完}
+入力補完は、コマンドやファイル名の入力時にTabキーを押すことで、入力を補完する機能である。入力補完を使用することで、入力ミスを防ぐことができる。使用方法は入力中にTabキーを押すだけである。ただし、複数の候補がある場合はTabキーを押しても補完されない場合がある。その場合はTabキーを2回押すことで候補が表示される。
+\subsubsection{コマンド履歴}
+コマンド履歴は、過去に入力したコマンドを表示する機能である。矢印キーを使用することで、過去に入力したコマンドを表示することができる。矢印キーの上を押すことで過去のコマンドを表示し、矢印キーの下を押すことで新しいコマンドを表示することができる。
+\begin{hosokubox}{インクリメンタル検索}
+  Ctrl + Rを押すことで、過去に入力したコマンドを検索することができる。過去に入力したコマンドを検索し下矢印キーを押すことで検索したコマンドを入力することができる。
+\end{hosokubox}
+
+\subsubsection{パイプとリダイレクト}
+Linuxでコマンド入力をする際複数コマンドを組み合わせたい時がある。それらを組み合わせる際に使用するのがパイプである。パイプは「\textbar」を使用してコマンドをつなげることで、前のコマンドの出力を次のコマンドの入力として使用することができる。\\
+  \begin{terminalbox}
+    \verb|$ {コマンド1} | \textbar{} \verb| {コマンド2}|\\\\
+    例：lsコマンドの出力をgrepコマンドに渡してtestを検索する\\
+    \verb|$ ls | \textbar{} \verb| grep test|
+  \end{terminalbox}
+また、実行したコマンドの出力をファイルに保存することができる。これをリダイレクトという。リダイレクトは「\textgreater」を使用して出力をファイルに保存することができる。\\
+\begin{terminalbox}
+  \verb|$ {コマンド} > {ファイル名}|\\\\
+  例：lsコマンドの出力をtest.txtに保存する\\
+  \verb|$ ls > test.txt|
+\end{terminalbox}
+\begin{hosokubox}{上書きと追記}
+  リダイレクトする際、ファイルが存在する場合は上書きされる。ファイルの内容を保持したまま追記したい場合は「\textgreater\textgreater」を使用する。
+\end{hosokubox}
+\section{パーミッション}
+\subsection{ファイルの所有者}
+Linuxではファイルやディレクトリに所有者が設定されている。所有者はファイルやディレクトリを作成したユーザーであり、所有者はファイルやディレクトリに対して権限を持っている。所有者はユーザー名で表される。\\
+実際に確認するには、lsコマンドに「-l」オプションを付けて実行する。実行結果は以下のようになる。
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/linux-server/5_1-ls-l.png}
+  \caption{ls -lの実行結果}
+  \label{fig:ls-l}
+\end{figure}
+\subsection{アクセス権}
+Linuxではファイルやディレクトリに対してアクセス権が設定されている。アクセス権は読み取り、書き込み、実行の3つの権限が設定されている。アクセス権は所有者、グループ、その他の3つに設定されている。\\
+\begin{hosokubox}{ファイルのアクセス権}
+  \begin{itemize}
+    \item r : 読み取り権限  ファイルの内容を読み取ることができる
+    \item w : 書き込み権限  ファイルの内容を書き込むことができる
+    \item x : 実行権限  ファイルを実行することができる
+  \end{itemize}
+\end{hosokubox}
+\begin{hosokubox}{ディレクトリのアクセス権}
+  \begin{itemize}
+    \item r : 読み取り権限  ディレクトリ内のファイルを表示することができる
+    \item w : 書き込み権限  ディレクトリ内にファイルを作成することができる
+    \item x : 実行権限  ディレクトリ内に移動することができる
+  \end{itemize}
+\end{hosokubox}
+\begin{johobox}{ls -lで表示される種類について}
+  ls -lで表示される先頭の文字はファイルの種類を示している。以下に一部を示す。
+  \begin{itemize}
+    \item \verb|- : 通常のファイル|
+    \item \verb|d : ディレクトリ|
+    \item \verb|l : シンボリックリンク|
+  \end{itemize}
+\end{johobox}
+\subsection{パーミッションの変更}
+アクセス権の変更にはchmodコマンドを使用する。ただし、アクセス権の変更にはsodo権限が必要である。\\
+\begin{commandbox}{chmodコマンドの使用方法}
+  \verb|chmod {パーミッション} {ファイル名}|\\
+  \verb|chmod {パーミッション} {ディレクトリ名}|
+\end{commandbox}
+また、アクセス権の変更には記号を用いた方法と数値を用いた方法がある。数値を用いたものは前述しているため、ここでは記号を用いた方法について説明する。
 \begin{table}[H]
   \centering
-  \begin{tabular}{|l|l|}
-    \hline
-    コマンド & 説明 \\ \hline
-    ls & ファイルやディレクトリの一覧を表示する \\ \hline
-    cd & ディレクトリを移動する \\ \hline
-    pwd & 現在のディレクトリを表示する \\ \hline
-    mkdir & ディレクトリを作成する \\ \hline
-    touch & ファイルを作成する \\ \hline
-    cp & ファイルやディレクトリをコピーする \\ \hline
-    mv & ファイルやディレクトリを移動する \\ \hline
-    rm & ファイルやディレクトリを削除する \\ \hline
-    cat & ファイルの内容を表示する \\ \hline
-    less & ファイルの内容をページ単位で表示する \\ \hline
-    head & ファイルの先頭部分を表示する \\ \hline
-    tail & ファイルの末尾部分を表示する \\ \hline
+  \caption{chmodコマンドの記号について}
+  \begin{tabular}{|c|c|c|} \hline
+    対象 & 操作 & 権限 \\ \hline
+    u:所有者 & +:追加 & r:読み取り権限 \\
+    g:所有グループ & -:削除 & w:書き込み権限 \\
+    o:その他ユーザー & =:指定 & x:実行権限 \\
+    a:全てのユーザー & & \\ \hline
   \end{tabular}
-  \caption{ファイルやディレクトリの操作コマンド}
-  \label{tab:file-commands}
 \end{table}
-\section{パーミッション}
-
+\begin{hosokubox}{chmodコマンドの使用例}
+  \begin{itemize}
+    \item \verb|chmod u+x test.txt| : test.txtに所有者に実行権限を追加する
+    \item \verb|chmod g-w test.txt| : test.txtに所有グループから書き込み権限を削除する
+    \item \verb|chmod o=r test.txt| : test.txtにその他ユーザーに読み取り権限を指定する
+    \item \verb|chmod a=rwx test.txt| : test.txtに全てのユーザーに読み取り、書き込み、実行権限を指定する
+  \end{itemize}
+\end{hosokubox}
+\subsection{所有者と所有グループ}
+Linuxにおけるファイルやディレクトリは作成したユーザーが所有者・所有グループとなる。しかし、一定以上のサーバー管理となる場合、管理体系などの理由により管理者レベルの高いユーザーに所有権を譲渡する必要がある。その際にchownコマンドを使用する。
+\begin{commandbox}{chownコマンドの使用方法}
+  \verb|chown {所有者} {ファイル名(ディレクトリ名)}|\\
+  \verb|chgrp {所有グループ} {ファイル名(ディレクトリ名)}|
+\end{commandbox}
+\begin{attentionbox}{chownコマンドの注意点}
+  chownコマンドはsudo権限が必要である。また、ファイルやディレクトリの所有者を変更する際は、そのファイルやディレクトリに対して所有者権限を持っている必要がある。
+\end{attentionbox}
 \section{環境変数}
 
 \section{テキストエディタ}

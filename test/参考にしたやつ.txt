@@ -10,3 +10,11 @@ https://qiita.com/yuta_931214/items/7cd5df422e05cf07c2f8
 面白コマンド
 https://qiita.com/to-fmak/items/ea345839f394db781bd0
 
+ls
+https://qiita.com/3062_in_zamud/items/d93770016e7d931a5983
+
+ifconfig
+https://qiita.com/pe-ta/items/aff8db72530c6baa11b2
+
+route
+https://qiita.com/kooohei/items/b0931ae210911cc52adc
