@@ -813,6 +813,61 @@ viエディタ（Vim）を起動すると、最初はコマンドモードにな
   \end{tabular}
 \end{table}
 \section{ネットワーク設定}
+ここではLinuxにおけるネットワーク設定について解説を行う。
+\begin{attentionbox}{ネットワーク知識について}
+  ここではIPアドレス、サブネットマスクなどネットワークに関する基礎知識があるものとしている。
+\end{attentionbox}
+\subsection{ポート番号}
+通常サーバーでは複数のアプリケーションが動作している。クライアントとの通信時にIPアドレスしか情報を持たない場合、受信したでデータがどのアプリケーションで利用されるのか不明である。そのため、通信時にIPアドレスと対象となるポート番号を指定することでアプリケーションに情報を伝達する。ポート番号は0から65535までの範囲で指定される。
+\begin{hosokubox}{ウェルノウンポート番号}
+  0から1023までのポート番号をウェルノウンポート番号と呼ぶ。これらのポート番号は一般的にすでに使用されているため、新たに使用することは推奨されない。
+  \begin{itemize}
+    \item 20 : FTP データ転送
+    \item 21 : FTP 制御情報
+    \item 22 : SSH
+    \item 25 : メール（SMTP）
+    \item 80 : HTTP
+    \item 443 : HTTPS
+  \end{itemize}
+  また、使用済みポート番号は/etc/servicesファイルに記載されている。
+\end{hosokubox}
+
+\subsection{IPアドレスの管理と固定化}
+通常Linuxに限らず、機器をネットワークに接続するとDHCPによりIPアドレスが自動で割り当てられる。しかし、サーバーにおいてIPアドレスが変わる可能性がある場合、IPが変わったことによるアクセス障害などにつながる場合がある。そのため、サーバーにおいては固定IPアドレスを設定することが推奨される。
+\begin{hosokubox}{DHCP}
+  DHCP（Dynamic Host Configuration Protocol）は、ネットワークに接続された機器にIPアドレスなどのネットワーク設定を自動で割り当てるプロトコルである。DHCPによりIPアドレスが自動で割り当てられるため、ネットワークの管理が容易になる。また、これにより割り当てられたIPアドレスを一般的に動的IPアドレスと呼ぶ。
+\end{hosokubox}
+\subsection{Netplanによるネットワーク設定}
+UbuntuではNetplanを使用してネットワーク設定を行う。NetplanはYAML形式でネットワーク設定を記述する。以下にNetplanの設定ファイルの例を示す。
+\begin{attentionbox}{設定ファイルのバックアップ}
+  通常設定ファイルの変更の際には、設定ファイルのバックアップを取得することを推奨する。
+  cpコマンドを使用し、設定ファイルのバックアップを作成しておく。
+  \begin{commandbox}{設定ファイルのバックアップ}
+    \verb|$ cp /etc/netplan/01-netcfg.yaml /etc/netplan/01-netcfg.yaml.bak|
+  \end{commandbox}
+\end{attentionbox}
+\begin{commandbox}{/etc/netplan/01-netcfg.yaml}
+  \begin{verbatim}
+network:
+  version: 2
+  renderer: networkd  # ネットワークの設定方法
+  ethernets:
+    enp0s3:    # インターフェース名
+      dhcp4: no # DHCPを使用しない
+      addresses: 
+        - 192.168.0.200/24  # 固定IPアドレス
+      gateway4: 192.168.0.1 # ゲートウェイ
+      namesevers:
+      addresses:
+        - 8.8.8.8 # DNSサーバー
+        - 8.8.4.4 # 代替DNSサーバー
+  \end{verbatim}
+\end{commandbox}
+設定ファイルの変更後、変更を適用するためには以下のコマンドを実行する。
+\begin{commandbox}{ネットワーク設定の適用}
+  \verb|$ sudo netplan apply|
+\end{commandbox}
+実行後接続を確認して終了となる。
 
 \section{ユーザー管理}
 
