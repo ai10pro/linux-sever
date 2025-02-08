@@ -666,6 +666,45 @@ Linuxにおけるファイルやディレクトリは作成したユーザーが
   chownコマンドはsudo権限が必要である。また、ファイルやディレクトリの所有者を変更する際は、そのファイルやディレクトリに対して所有者権限を持っている必要がある。
 \end{attentionbox}
 \section{環境変数}
+環境変数は、システム全体で使用される変数である。環境変数はシェルが起動する際に設定され、シェルの終了時に破棄される。環境変数はシェルスクリプトやプログラムから参照することができる。主な環境変数は以下の通りである。\\
+\begin{table}[H]
+  \centering
+  \caption{主な環境変数}
+  \begin{tabular}{|c|c|} \hline
+    環境変数 & 説明 \\ \hline
+    HOME & ユーザーのホームディレクトリのパス \\
+    PATH & 実行ファイルの検索パス \\
+    USER & ユーザー名 \\
+    SHELL & シェルのパス \\
+    LANG & 言語設定 \\
+    PWD & カレントディレクトリのパス \\
+    HISTSIZE & コマンド履歴の最大値 \\
+    HISTFILE & コマンド履歴の保存先 \\ \hline
+  \end{tabular}
+\end{table}
+地齋に環境変数を表示するには、echoコマンドを使用する。この時、環境変数名の前に「\texttt{\$}」を付けることで環境変数の値を表示することができる。
+\begin{commandbox}{環境変数の表示}
+  \verb|$ echo ${環境変数名}|
+\end{commandbox}
+また、これらの環境変数の値などを一時的に変更したい場合はexportコマンドを使用する。exportコマンドを使用することで、環境変数の値を一時的に変更することができる。
+\begin{commandbox}{exportコマンドの使用方法}
+  \verb|export {環境変数名}={値}|\\\\
+  例：HISTSIZEの値を100に変更する\\
+  \verb|$ export HISTSIZE=100|
+\end{commandbox}
+\begin{hosokubox}{環境変数の値を永続的に変更する}
+  環境変数の値を永続的に変更するには、環境変数の設定を行うファイルに環境変数の設定を記述する。環境変数の設定を行うファイルは以下の通りである。変更には「.bash\_profile」や「.bashrc」の末尾にexportコマンドを追記する。
+  \begin{itemize}
+    \item /etc/profile
+    \item /etc/bashrc
+    \item \texttt{\~/.bash\_profile}
+    \item \texttt{\~/.bashrc}
+  \end{itemize}
+\end{hosokubox}
+\begin{johobox}{環境変数の設定ファイルについて}
+  「.bashrc」: システムのログイン時に読み込まれる隠しファイル。\\
+  「.bash\_profile」: ユーザーがログインした際に読み込まれるファイル。
+\end{johobox}
 
 \section{テキストエディタ}
 
