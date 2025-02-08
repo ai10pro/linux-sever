@@ -868,11 +868,57 @@ network:
   \verb|$ sudo netplan apply|
 \end{commandbox}
 実行後接続を確認して終了となる。
-
 \section{ユーザー管理}
-
+Linuxにおけるサーバー作業は一般的にrootユーザーで行うことは推奨されない。そのため、一般ユーザーを作成し、sudo権限を付与することが推奨される。一部root権限が必要な場合にのみrootユーザーで作業を行うことが推奨される。\\
+現在ログインしているユーザーを見分けるにはターミナルに表示される最後の「\$」や「\#」を確認する。一般ユーザーの場合は「\$」、rootユーザーの場合は「\#」が表示される。
+\subsection{rootユーザーのパスワードの変更}
+初期状態ではrootユーザーにパスワードは設定されていない。そのため、rootユーザーにパスワードを設定する必要がある。
+\begin{commandbox}{rootユーザーのパスワードの変更}
+  \verb|$ sudo passwd root|
+\end{commandbox}
+\subsection{一般ユーザーの作成・削除とグループへの追加・削除}
+サーバー管理において管理する人が増えたりする。その際にユーザーの作成、削除、グループへの追加、削除などが必要になる。以下にそれらの操作方法を示す。
+\begin{commandbox}{ユーザーの作成}
+  \verb|$ sudo adduser {ユーザー名}|\\
+  例：user1というユーザーを作成する場合\\
+  \verb|$ sudo adduser user1|
+\end{commandbox}
+\begin{commandbox}{ユーザーの削除}
+  \verb|$ sudo deluser {ユーザー名}|\\
+  例：user1というユーザーを削除する場合\\
+  \verb|$ sudo deluser user1|
+\end{commandbox}
+\begin{commandbox}{ユーザをグループへ追加(usermod)}
+  \verb|$ sudo usermod -aG {グループ名} {ユーザー名}|\\
+  例：user1をadminグループに追加する場合\\
+  \verb|$ sudo usermod -aG admin user1|
+\end{commandbox}
+\begin{commandbox}{ユーザをグループから削除(gpasswd)}
+  \verb|$ sudo gpasswd -d {ユーザー名} {グループ名}|\\
+  例：user1をadminグループから削除する場合\\
+  \verb|$ sudo gpasswd -d user1 admin|
+\end{commandbox}
+\subsection{ユーザーの切り替え}
+Linuxにおいては複数のユーザーで作業を行うことがある。その際にユーザーを切り替える方法を以下に示す。切り替えにはsuコマンドを使用する。
+\begin{commandbox}{ユーザーの切り替え}
+  \verb|$ su {ユーザー名}|\\
+  例：user1に切り替える場合\\
+  \verb|$ su user1|
+\end{commandbox}
+\begin{hosokubox}{suコマンドを使ってrootユーザーに切り替える}
+  rootユーザーに切り替える場合は以下のように入力することで切り替えることができる。
+  \begin{commandbox}{rootユーザーに切り替える}
+    \verb|$ su #または|\\
+    \verb|$ su -|\\
+    パスワードを入力する
+  \end{commandbox}
+\end{hosokubox}
+\subsection{sudoコマンド}
+実際の作業においては、rootユーザーで作業を行うことは推奨されない。そのため、一般ユーザーにsudo権限を付与し、必要な時にのみroot権限で作業を行うことが推奨される。sudoコマンドを使用することで、一般ユーザーにroot権限を付与することができる。sudo権限を付与するには、ユーザーをsudoグループに追加することで使用可能になる。
 \section{SSH}
-
+\subsection{SSHについて}
+SSH（Secure Shell）は、ネットワーク上で安全に通信を行うためのプロトコルである。SSHは暗号化通信を行うため、パスワードやデータの盗聴を防ぐことができる。また、SSHはリモートログインを行い、リモートサーバーの操作を行うことができる。\\
+SSHではホスト認証とユーザー認証の2つの認証が行われる。ホスト認証はサーバーの公開鍵をクライアントが保持しているかどうかを確認する。この仕組みは意図しないサーバーへの接続による危険を排除する目的がある。
 \section{基本的なサーバー管理}
 
 \section{Webサーバーの構築}
