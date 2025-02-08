@@ -917,12 +917,171 @@ Linuxにおいては複数のユーザーで作業を行うことがある。そ
 実際の作業においては、rootユーザーで作業を行うことは推奨されない。そのため、一般ユーザーにsudo権限を付与し、必要な時にのみroot権限で作業を行うことが推奨される。sudoコマンドを使用することで、一般ユーザーにroot権限を付与することができる。sudo権限を付与するには、ユーザーをsudoグループに追加することで使用可能になる。
 \section{SSH}
 \subsection{SSHについて}
-SSH（Secure Shell）は、ネットワーク上で安全に通信を行うためのプロトコルである。SSHは暗号化通信を行うため、パスワードやデータの盗聴を防ぐことができる。また、SSHはリモートログインを行い、リモートサーバーの操作を行うことができる。\\
-SSHではホスト認証とユーザー認証の2つの認証が行われる。ホスト認証はサーバーの公開鍵をクライアントが保持しているかどうかを確認する。この仕組みは意図しないサーバーへの接続による危険を排除する目的がある。
+SSH（Secure Shell）は、ネットワーク上で安全に通信を行うためのプロトコルである。SSHは、リモートホスト間の通信を安全に行うために使用される。\\
+SSHはでは２つの認証が行われており、ホスト認証とユーザー認証が行われる。ホスト認証は、通信先のホストが正しいかどうかを確認するために行われる。SSH接続時に、サーバーから固有のホスト認証鍵（公開鍵）がクライアントに送られ、クライアントはその鍵を使用してホスト認証を行う。ただし、初回接続時にはホストの認証鍵がないため、サーバーから送られてくるホスト認証鍵を登録する必要がある。\\
+ホスト認証後にユーザー認証が行われる。ユーザー認証は、ユーザーが正しいかどうかを確認するために行われる。ユーザー認証にはパスワード認証や公開鍵認証などがある。パスワード認証は、ユーザー名とパスワードを使用して認証を行う。一方、公開鍵認証は、公開鍵と秘密鍵を使用して認証を行う。公開鍵認証はパスワード認証よりもセキュリティが高いため、推奨される。
+\begin{table}[H]
+  \centering
+  \caption{SSHのユーザー認証方法}
+  \begin{tabular}{|c|c|c|} \hline
+      & パスワード認証 & 公開鍵認証 \\ \hline
+    認証に必要な要素 & ユーザー名とパスワード & ユーザー名、パスフレーズ、秘密鍵 \\ \hline
+    セキュリティについて  & 総当たりに対して脆弱 & 秘密鍵の流出がない限り安全 \\ \hline
+  \end{tabular}
+\end{table}
+近年ではこれら２つを組み合わせる二段階認証が推奨される。
+\subsection{SSHのサーバー構築}
+\subsubsection{OpenSSHのインストール}
+UbuntuでのSSHサーバーの構築にはOpenSSHを使用する。OpenSSHはSSHプロトコルを実装したオープンソースのソフトウェアである。OpenSSHは、SSHプロトコルの実装として最も広く使用されている。\\
+OpenSSHのインストールは以下のコマンドを実行することで行うことができる。
+\begin{terminalbox}
+  \verb|$ sudo apt install openssh-server|
+\end{terminalbox}
+インストール後、systemctlコマンドを使用してSSHサーバーを起動・起動確認を行う。
+\begin{terminalbox}
+  \verb|$ sudo systemctl start ssh|\\
+  \verb|$ sudo systemctl enable ssh|\\
+  \verb|$ sudo systemctl status ssh|
+\end{terminalbox}
+以下のような表示がされればSSHサーバーの起動に成功している。
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=12cm]{images/linux-server/10_2_1-status-ssh.png}
+  \caption{SSHサーバーの起動確認}
+\end{figure}
+\begin{hosokubox}{SSHサーバーの起動}
+  初期設定ではシステム起動時にSSHサーバーが自動で起動されるように設定されている。しかし、手動でSSHサーバーを起動する場合は「systemctl start ssh」コマンドを使用する。
+\end{hosokubox}
+
+\subsubsection{ポート番号の設定}
+SSHサーバーはデフォルトで22番ポートを使用する。しかし、22番ポートは前述している通りウェルノウンポート番号であるため、セキュリティ上のリスクがある。そのため、一般的にポート番号を変更することが推奨される。ポート番号の変更はsshd\_configファイルを編集することで行うことができる。
+\begin{attentionbox}{sshd\_configファイルのバックアップ}
+  通常設定ファイルの変更の際には、設定ファイルのバックアップを取得することを推奨する。
+  cpコマンドを使用し、設定ファイルのバックアップを作成しておく。
+  \begin{commandbox}{設定ファイルのバックアップ}
+    \verb|$ cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak|
+  \end{commandbox}
+\end{attentionbox}
+ポート番号の変更はsshd\_configファイル内に「\#Port22」と書かれている箇所のコメントアウトを外し、ポート番号を指定することで変更することができる。
+\begin{commandbox}{sshd\_configファイルの編集}
+  \begin{verbatim}
+  #Port 22
+  Port 10022\end{verbatim}
+\end{commandbox}
+このままではファイアーウォールで設定されているポート番号に対して許可されていないため、ファイアーウォールの設定を変更する必要がある。
+\begin{commandbox}{ファイアーウォールの設定}
+  \verb|$ sudo ufw allow 10022/tcp|
+\end{commandbox}
+\begin{johobox}{TCPとUDP?}
+  TCP（Transmission Control Protocol）とUDP（User Datagram Protocol）は、インターネットで使用される通信プロトコルである。TCPは比較的安定した通信を行いたいときに使用される。一方、UDPは速度を重視する通信を行いたいときに使用される。\\
+  TCPはSSHなど通信の安全を求める。一方、UDPは動画配信などの速度を重視する通信に使用される。
+\end{johobox}
+\subsubsection{ログインの制限}
+SSHサーバーは外部から全ての権限があるrootへのログインを制限することが推奨される。これにより、rootユーザーに対する攻撃を防ぐことができる。ログインの制限はsshd\_configファイルを編集することで行うことができる。
+\begin{commandbox}{sshd\_configファイルの編集}
+  \begin{verbatim}
+  PermitRootLogin no    # 追加する\end{verbatim}
+\end{commandbox}
+また、特定のユーザーのみログインを許可する場合はAllowUsersを使用する。
+\begin{commandbox}{sshd\_configファイルの編集}
+  \begin{verbatim}
+  AllowUsers user1 user2    # 追加する\end{verbatim}
+\end{commandbox}
+\subsubsection{SSHログイン}
+ここまでできたら一度SSH接続を行ってみる。SSH接続の接続元（SSHサーバーを立てたPC）をサーバー、接続するPCをクライアントと呼ぶ。接続は以下のコマンドをクライアントで使用する。なお、実行にはWindowsではPoserShell、Linuxではターミナルを使用する。
+\begin{commandbox}{terminal(クライアントPC)}
+  \verb|$ ssh {ユーザー名}@{IPアドレス} -p {ポート番号}|
+\end{commandbox}
+コマンド実行後、パスワードを求められるので入力する。正しく入力された場合、SSHサーバーに接続される。
+\begin{hosokubox}{初回接続}
+  初回接続時にはホスト認証鍵がないため、接続時にホスト認証鍵を登録するかどうかを尋ねられる。yesを入力することでホスト認証鍵を登録することができる。
+\end{hosokubox}
+本書は基礎知識＋Webサーバーの構築を目的とするため二段階認証についての説明は省略する。ただし、近年実際のネットワークを介してアクセスをする場合は必須とされているので、調べ、できるようになっておくべきである。
 \section{基本的なサーバー管理}
-
+\subsection{サーバー負荷}
+  サーバー運用において負荷の理解は重要である。どの部分に負荷がかかっているのかを理解することでアルゴリズムの最適化やサーバースペックの見直しなどを行うことができる。サーバーの負荷を確認するにはuptimeコマンドを使用する。
+  \begin{commandbox}{負荷の確認}
+    \verb|$ uptime|\\
+    \verb| 10:00:00 up 1 day,  1:00,  1 user,  load average: 0.00, 0.01, 0.05|
+  \end{commandbox}
+  uptimeコマンドの出力は稼働時間の他にload averageが表示される。load averageは1分、5分、15分の負荷平均を示している。ここでいう負荷とはCPUのコア数に対する平均負荷を示している。例えば、CPUが4コアの場合、load averageが4を超えるとCPUがフル稼働している状態となる。
+\subsection{ディスクの使用状況}
+ディスクの使用状況を確認するにはdfコマンドを使用する。
+  \begin{commandbox}{ディスクの使用状況の確認}
+    \verb|$ df -h|\\
+    \verb|Filesystem      Size  Used Avail Use% Mounted on|\\
+    \verb|udev            1.9G     0  1.9G   0% /dev|\\
+    \verb|.......|
+  \end{commandbox}
+  dfコマンドの出力はファイルシステム、容量、使用、空き、使用率、マウントポイントが表示される。使用率が100\%になるとディスクがいっぱいになっているため、ディスク容量の拡張や不要なファイルの削除などを行う必要がある。
+\subsection{メモリとスワップ}
+メモリとスワップの使用状況を確認するにはfreeコマンドを使用する。
+\begin{johobox}{スワップとは？}
+  スワップはメモリが不足した場合にディスクの一部を仮想メモリとして使用する機能である。スワップが発生するとディスクアクセスが発生するため、メモリよりも遅いアクセス速度となる。そのため、スワップが発生するとパフォーマンスが低下する。 
+\end{johobox}
+  \begin{commandbox}{メモリとスワップの使用状況の確認}
+    \verb|$ free -h|\\
+    \verb|              total        used        free      shared  buff/cache   available|\\
+    \verb|Mem:           1.9G        1.1G        100M        100M        700M        500M|\\
+    \verb|Swap:          2.0G        100M        1.9G|
+  \end{commandbox}
+  freeコマンドの出力はメモリとスワップの使用状況を表示している。メモリの使用率が高い場合はプロセスの終了やメモリの増設などを行う必要がある。
+\subsection{プロセスの管理}
+実行中のプロセスを確認する時にはpsコマンドを使用する。実行中の全てのプロセスを確認するには以下のコマンドを実行する。
+  \begin{commandbox}{プロセスの確認}
+    \verb|$ ps aux|\\
+    \verb|UID        PID  PPID  C STIME TTY          TIME CMD|\\
+    \verb|root         1     0  0 10:00 ?        00:00:00 /sbin/init|\\
+    \verb|root         2     0  0 10:00 ?        00:00:00 [kthreadd]|
+  \end{commandbox}
+  psコマンドの出力はプロセスの情報を表示している。プロセスの終了やプロセスの強制終了などを行う場合はkillコマンドを使用する。実際はこれ以上のプロセスが実行されているのでlessコマンドやgrepコマンドなどを使用して絞り込むことが多い。
+\subsection{サービス管理}
+  サービスは、OS本体から切り離し可能な特定の役割や機能を持ったサブシステムのことをいう。サービスにはログ管理やネットワーク、WebサーバーやSSHサーバーなどの各種サーバープログラムが含まれる。サービスの起動、停止、再起動はsystemctlコマンドを使用する。
+  \begin{commandbox}{systemctlコマンド}
+    \verb|$ sudo systemctl {サブコマンド} {サービス名}|
+  \end{commandbox}
+  \begin{hosokubox}{systemctlのサブコマンド}
+    \begin{itemize}
+      \item start : サービスの起動
+      \item stop : サービスの停止
+      \item restart : サービスの再起動
+      \item status : サービスの状態を確認
+      \item enable : サービスの自動起動を有効にする
+      \item disable : サービスの自動起動を無効にする
+    \end{itemize}
+  \end{hosokubox}
 \section{Webサーバーの構築}
-
+ここまでサーバー操作に関する基礎を学んできた。ここからはWebサーバーの構築を行う。今回はApacheを使用したWebサーバーの構築を行う。
+\begin{johobox}{Apacheについて}
+  Apache HTTP Server(以下、Apache)は、Apacheソフトウェア財団が提供するオープンソースのWebサーバーソフトウェアである。1995年に開発が始まった。主な特徴として、拡張性が高く、多くのモジュールが提供されている。また、多くのOSに対応している。他にも静的コンテンツだけでなく動的なWebアプリケーションのホスティングにも対応している。
+\end{johobox}
+\subsection{サーバーソフトウェアのインストール}
+\subsubsection{WebサーバーとWebブラウザ}
+WebサーバーはHTTPプロトコルを使用してクライアントにWebページを提供するサーバーソフトウェアである。一方、WebブラウザはHTTPプロトコルを使用してWebサーバーからWebページを取得するクライアントソフトウェアである。Webブラウザとして現在有名なのが、Google Chrome、Firefox、Safari、Microsoft Edgeなどがある。
+\subsection{Apache HTTP serverのインストール}
+Apache HTTP serverのインストールは以下のコマンドを実行することで行うことができる。
+\begin{terminalbox}
+  \verb|$ sudo apt update|
+  \verb|$ sudo apt -y install apache2|
+\end{terminalbox}
+インストール後、systemctlコマンドを使用してApache HTTP serverを起動・起動確認を行う。
+\begin{terminalbox}
+  \verb|$ sudo systemctl start apache2|\\
+  \verb|$ sudo systemctl enable apache2|\\
+  \verb|$ sudo systemctl status apache2|
+\end{terminalbox}
+以下のような表示がされればApache HTTP serverの起動に成功している。
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=14cm]{images/linux-server/12_3_status-apache.png}
+  \caption{Apache HTTP serverの起動確認}
+\end{figure}
+また、ブラウザを使用してhttp://localhost/にアクセスすることでApacheのデフォルトページが表示される。
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=14cm]{images/linux-server/12_3-2_welcompage.png}
+  \caption{Apacheのデフォルトページ}
+\end{figure}
 \section{Dockerを使用した環境構築や運用}
 
 \section{終わりに}
