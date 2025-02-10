@@ -84,6 +84,7 @@
 \title{Linuxサーバー構築手順書}
 \author{大阪公立大学工業高等専門学校\\
 3年 知能情報コース 5番\\
+ai10pro
 }
 \date{\today}
 \maketitle\thispagestyle{empty}
@@ -94,8 +95,41 @@
 \setcounter{section}{-1}
 
 \section{はじめに}
+この手順書は、LinuxにてWebサーバーを構築するまでの手順を記載している。ターゲットとしてネットワークやhtmlなどの知識が少しあり、サーバー構築をしてみたいという人や、Linuxというものを触ってみたいという人とする。\\
+筆者のLinuxなどの歴としては、本手順書を書いている段階で1年程度である。そのため、初心者にある程度寄り添えるように心がけている。\\
+次章から説明や手順を記載しているため実際に手を動かしてもらうと理解が深まると思う。\\
+それでは楽しいLinuxのお時間をお過ごしください。
+\\\\\\
+本書の環境\\
+■PC：Gateway NE132-f14p
+\begin{itemize}
+  \item CPU：Intel Celeron N3060
+  \item メモリ：4GB
+  \item ストレージ：eMMC 64GB
+\end{itemize}
+■インストールするOS：Ubuntu 22.04 LTS
+\\
+本手順書の作成にはTexにおける編集補助としてGitHubCopilotを使用している。\\
+また、本書の作成にはVScodeを使用している。\\
+\\\\
+2025年2月10日
+
+\newpage
 
 \section{Linuxについて}
+\subsection{Linuxとは}
+Linuxは、UNIX系のオペレーティングシステムの一つであり、オープンソースである。UNIX系のオペレーティングシステムは、多くのサーバーで使用されている。Linuxは、サーバーだけでなく、組み込みシステムやスマートフォン、スーパーコンピュータなど、様々な機器で使用されている。例としてRaspberry Piや近年話題となっているSteam deckなどのポータブルゲーミングデバイスなどもLinuxをベースOSにしている。
+\subsection{Linuxディストリビューション}
+Linuxは、様々なディストリビューションが存在する。ディストリビューションとは、Linuxカーネルに、シェル、コマンド、ライブラリ、デスクトップ環境、アプリケーションなどを組み合わせたものである。代表的なものとして、Ubuntu、Debian、CentOS、Raspberry Pi OSなどがある。\\
+本書ではUbuntuの環境を前提として説明を行う。
+\subsubsection{カーネル}
+Linuxのカーネルは、Linuxの中核となる部分であり、ハードウェアとソフトウェアの間のインターフェースを提供する。カーネルは、プロセス管理、メモリ管理、ファイルシステム、デバイスドライバなどの機能を提供する。
+\subsubsection{シェル}
+シェルは、ユーザーとカーネルの間のインターフェースを提供する。シェルは、ユーザーがコマンドを入力し、カーネルに命令を伝える。代表的なシェルとして、bash、zsh、fishなどがある。
+\subsubsection{コマンド}
+シェルを通して実行するプログラムであり、Linuxには数千にもなるコマンドが存在するが基本的に使用する物は限られているためサーバー運用においては覚えておくことで作業効率が向上する。
+\subsubsection{ライブラリ}
+ライブラリは、プログラムの共通部分をまとめたものであり、プログラムの開発を効率化する。ライブラリは、プログラムの実行時にリンクされる。
 \subsection{ファイルやディレクトリ構造について}
 Linuxではディレクトリ構造がWindowsとは異なる。
 \subsubsection{ファイルの種類}
@@ -111,7 +145,8 @@ Linuxではディレクトリ構造がWindowsとは異なる。
 
   \subsubsection{ディレクトリ構造}
   Linuxのディレクトリ構造は/(ルート)を起点として以下のディレクトリが主に挙げられる。それらをある程度理解しておくことで各種設定などの変更の際に便利である。\\
-  \begin{table}[h]
+  表\ref{tab:directories}に主要なディレクトリとその説明を示す。
+  \begin{table}[H]
     \centering
     \begin{tabular}{|l|l|}
       \hline
@@ -131,10 +166,23 @@ Linuxではディレクトリ構造がWindowsとは異なる。
     \caption{主要なディレクトリとその説明}
     \label{tab:directories}
   \end{table}
-  表\ref{tab:directories}に主要なディレクトリとその説明を示す。
 
 
 \section{Ubuntuインストール}
+\subsection{Ubuntuとは}
+Ubuntuは、Linuxディストリビューションの一つであり、デスクトップ環境を提供する。また、サーバー版も提供されており、サーバー運用にも使用される。Ubuntuは、Debianをベースにしており、Debianの安定性とUbuntuの使いやすさを兼ね備えている。また、Ubuntuは、オープンソースであり、無料で利用することができる。\\
+\subsection{インストール環境}
+  本書の環境を再度記載する。\\
+  ■PC：Gateway NE132-f14p
+  \begin{itemize}
+    \item CPU：Intel Celeron N3060
+    \item メモリ：4GB
+    \item ストレージ：eMMC 64GB
+  \end{itemize}
+  ■インストールするOS：Ubuntu 22.04 LTS
+  \begin{johobox}{最新版Ubuntu}
+    最新のUbuntuのバージョンは24.04 LTSである。しかし、本書では22.04 LTSを使用する。理由として、ドキュメントが豊富であり、安定しているためである。最新バージョンと22.04 LTSでは一部UIが違う部分もあるため、注意が必要である。
+  \end{johobox}
 \subsection{インストールメディアの準備}
   \begin{enumerate}
     \item UbuntuのISOファイルをダウンロード
@@ -159,11 +207,16 @@ Linuxではディレクトリ構造がWindowsとは異なる。
 \subsection{Boot Modeの変更}
   \begin{enumerate}
     \item 電源をつけF2を連打しBIOS画面を表示
-    \item Securityに移動しSupervisor Passwordを設定
+    \begin{hosokubox}{BIOS画面の操作}
+      BIOS画面は基本的にキーボードで操作されることが多い。一部メーカーの場合はマウスで操作することもあるが、基本的にはキーボードでの操作が必要である。
+    \end{hosokubox}
+    \item Securityに移動しSupervisor Passwordを設定\\
+    一度Enterを押し、パスワードを入力し、再度Enterを押し、もう一度パスワードを入力し、Enterを押す。\\
     \item Bootに移動しBoot ModeをLegacyに変更
     \item F10で保存して再起動
     \item F2を連打しBIOS画面を表示
-    \item Bootに移動しBoot Priorityを変更しインストールメディアが入るものを選択
+    \item Bootに移動しBoot Priorityを変更しインストールメディアが入るものを選択\\
+    作成したインストールメディアを選択する。選択にはF5またはF6を使用し順番を変更する。\\
     \item Boot ModeをUEFIに変更
     \item SecureBootをDisableに変更
     \item F10で保存して再起動
@@ -189,7 +242,8 @@ Linuxではディレクトリ構造がWindowsとは異なる。
     \item EMMC \textgreater EFI \textgreater Ubuntu \textgreater shimx64.efiを選択
     \item Boot名を入力し、Enter
     \item Bootに移動しSecure BootをDisableに変更
-    \item Securityに移動しSupervisor Passwordを削除
+    \item Securityに移動しSupervisor Passwordを削除\\
+    Supervisor PasswordにてEnterを押し、今のパスワードを入力、Enterを押し、何も入力しないままEnterを押す、もう一度行うことでパスワードが削除される。
     \item F10で保存して再起動
     \item ログイン画面になったら成功
   \end{enumerate}
@@ -1228,11 +1282,84 @@ SSHの設定の際さらっと出てきていたがここでもファイアウ�
   \item リクエストの日時
 \end{itemize}
 アクセスログの設定は「/etc/apache2/apache2.conf」ファイルに記述されている。以下にアクセスログの設定例を示す。
+\begin{commandbox}{アクセスログの例}
+  \begin{verbatim}
+::1 # アクセス元のIPアドレス（ローカルのため::1）
+- # リモートユーザー名
+  [10/Feb/2025:22:30:31 +0900]  # リクエストの日時
+  "GET / HTTP/1.1" 200 2170 "-" "Mozilla/5.0  # リクエストの内容
+  (Windows NT 10.0; Win64; x64)   # ユーザーエージェント
+  AppleWebKit/537.36 (KHTML, like Gecko)  # ユーザーエージェント
+  Chrome/132.0.0.0 Safari/537.36" # アクセスブラウザ\end{verbatim}
+\end{commandbox}
+アクセスログの例をまとめると次のようになる。
+\begin{itemize}
+  \item アクセス元のIPアドレス（::1）
+  \item リモートユーザー名（-）
+  \item リクエストの日時（10/Feb/2025:22:30:31 +0900）
+  \item リクエストの内容（GET / HTTP/1.1）
+  \item ステータスコード（200）
+  \item アクセスしたウエブブラウザ（Chrome）
+\end{itemize}
+\begin{johobox}{ステータスコード}
+  いくつかのステータスコードを以下に示す。
+  \begin{itemize}
+    \item 200 : OK(リクエストが成功した)
+    \item 401 : Unauthorized(認証が必要)
+    \item 403 : Forbidden(アクセスが拒否された)
+    \item 404 : Not Found(リクエストされたリソースが見つからない)
+    \item 500 : Internal Server Error(サーバー内部のエラー)
+  \end{itemize}
+\end{johobox}
+\subsection{エラーログ}
+サーバーを管理する上で重要なものとしてエラーログも挙げられる。これにはサーバー運用時に発生したエラーの情報が記録されている。Apacheのエラーログのデフォルトは/var/log/apache2/error.logである。ただしエラーログについては様々なものがあるため、適宜対話型AIなどを用いて解決することがよいと思われる。そのためここでの説明は省略する。
+\newpage
+\section{参考リンク}
+Ubuntuについて\\
+RedHat, Linuxとは, \url{https://www.redhat.com/ja/topics/linux/what-is-linux}\\
+Canonical Ubuntu, Ubutu \url{https://jp.ubuntu.com}\\
+エンジニアの入口, 【初心者でもわかる】Ubuntuのインストール方法まとめ, \url{https://eng-entrance.com/ubuntu-install}\\
+金子邦彦研究室, Ubuntu 24.04のインストールガイド \url{https://www.kkaneko.jp/tools/ubuntu/ubuntudesktop.html}\\
+Quita, @yuta\_931214(yuta kimura), 【初学者向け】Linuxのファイル構造についてまとめてみた, \url{https://qiita.com/yuta_931214/items/7cd5df422e05cf07c2f8}
+\\\\
+使用PC\\
+リコレ！, Gateway NE132 NE132-F14P 〔Windows 10〕, \url{https://used.sofmap.com/r/item/2133024911019}\\
+\\\\
+便利機能インストール\\
+Quita, @takuya66520126A(takuya), ubuntuで日本語入力に変更する方法, \url{https://qiita.com/takuya66520126/items/8bb760bf99c4e25364e3}\\
+Quita, @tommy\_g, UbuntuにVimをインストールする \url{https://qiita.com/tommy_g/items/3ad4b26ccb4893f2760e}\\
+Quita, @to-fmak(Wenzhang), Linuxの面白いコマンド9選 \url{https://qiita.com/to-fmak/items/ea345839f394db781bd0}\\
+Zenn, koki, cmatrix コマンドでターミナルに文字を降らせる \url{https://zenn.dev/kou_pg_0131/articles/cmatrix-introduction}\\
+\\
+ネットワーク関連\\
+Quita, @pe-ta(ペーた), ifconfigの出力結果に書いてあること \url{https://qiita.com/pe-ta/items/aff8db72530c6baa11b2}\\
+Quita, @kooohei(Kohei Yamada), 静的ルーティングの設定 - Linux \url{https://qiita.com/kooohei/items/b0931ae210911cc52adc}\\
+\\
+ユーザー管理\\
+Quita, @3062\_in\_zamud(3062.\_zamud), [chown]ファイルやディレクトリの所有者を変更する方法 \url{https://qiita.com/3062_in_zamud/items/d93770016e7d931a5983}\\
+\\
+Apache\\
+Quita, @Apache \url{https://qiita.com/tags/apache}\\
+77Lifeworkベータ版, Apacheを複数起動（複数インスタンスを構成）する, \url{https://www.77-lifework.com/entry/apache-multi}\\
+JavaDrive, Listenディレクティブ：リクエストを受け付けるポート番号, \url{https://www.javadrive.jp/apache/ini/index3.html}
+Apache, Apache HTTP サーバ バージョン 2.2 バーチャルホストの例, \url{https://httpd.apache.org/docs/2.2/ja/vhosts/examples.html}\\
+InfoAcademy, Apacheのログの場所は？ログの場所を設定する方法について詳しく解説【Linux】, \url{https://engineer-ninaritai.com/apache-log-directory/}\\
+
+
+
+
+
+
+
+
+
+\newpage
 \section{終わりに}
+サーバー構築お疲れさまでした。ここまでLinuxの基礎的な部分から少し踏み込んだ部分も含めて解説をしました。筆者もそうですが1度するだけでは覚えていません。実際に同じように立てたい時が来た時にまた見返せばいいのです。\\
 
-
-
-
+反省として画像をもっと入れるべきだと思っております。改訂版が出た暁にはさらに見やすいものを心がけるつもりです。\\
+それでは今後とも楽しいLinuxライフを！
 
 
 \end{document}
+

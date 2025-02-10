@@ -1,5 +1,5 @@
 Mozac
-https://qiita.com/takuya66520126/items/8bb760bf99c4e25364e3
+https://qiita.com/takuya66520126/items/8bb760bfhttps://used.sofmap.com/r/item/213302491101999c4e25364e3
 
 Vim
 https://qiita.com/tommy_g/items/3ad4b26ccb4893f2760e
@@ -21,7 +21,6 @@ https://qiita.com/kooohei/items/b0931ae210911cc52adc
 
 
 
-[! 提出までに必ず消せ]
  gateway ne132-f14p
  	ハードウェアモデル　Gateway NE132
  	メモリ　4.0GiB
