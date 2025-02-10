@@ -18,3 +18,19 @@ https://qiita.com/pe-ta/items/aff8db72530c6baa11b2
 
 route
 https://qiita.com/kooohei/items/b0931ae210911cc52adc
+
+
+
+[! 提出までに必ず消せ]
+ gateway ne132-f14p
+ 	ハードウェアモデル　Gateway NE132
+ 	メモリ　4.0GiB
+ 	プロセッサー　Intel® Celeron(R) CPU N3060 @ 1.60GHz × 2
+ 	グラフィック　Mesa Intel® HD Graphics 400 (BSW)
+
+
+
+
+https://engineer-ninaritai.com/apache-log-directory/
+
+

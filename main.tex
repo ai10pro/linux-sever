@@ -67,6 +67,7 @@
 \newtcolorbox{terminalbox}[1][]{terminalstyle, #1}
 \newtcolorbox{commandbox}[2][]{terminalstyle, title={\faIcon{terminal} #2}, #1}
 \newtcolorbox{hosokubox}[2][]{green, title={\faIcon{bookmark} #2}, #1}
+% \newtcolorbox{hosokubox}[2][]{green, title={\faIcon{bookmark} #2}, #1}
 \newtcolorbox{johobox}[2][]{blue, title={\faIcon{info-circle} #2}, #1}
 \newtcolorbox{attentionbox}[2][]{yellow, title={\faIcon{exclamation-triangle} #2}, #1}
 
@@ -1082,8 +1083,151 @@ Apache HTTP serverのインストールは以下のコマンドを実行する�
   \includegraphics[width=14cm]{images/linux-server/12_3-2_welcompage.png}
   \caption{Apacheのデフォルトページ}
 \end{figure}
-\section{Dockerを使用した環境構築や運用}
 
+\subsection{Apacheの設定}
+ApacheはWebサーバーとして当然ながら、様々な設定を行うことができる。それらを管理するのは「/etc/apache2/apache2.conf」や「/etc/apache2/sites-available/000-default.conf」などの設定ファイルである。ここではそれらに含まれる設定について解説する。
+\begin{johobox}{apache2.confファイルについて}
+  apache2.confファイルはサーバー全体に適用するためのグローバル設定ファイルである。このファイルには、サーバーの設定やモジュールの読み込みなどが記述されている。
+\end{johobox}
+\begin{johobox}{000-default.confファイルについて}
+  000-default.confファイルはサイトごとの設定ファイルである。このファイルには、サイトの設定やドキュメントルートの設定などが記述されている。サイトごとの設定ファイルのため、このファイルを変更する、もしくは、新たに仮想ホストの設定ファイルを作成することで複数のサイトを運用することができる。
+\end{johobox}
+\begin{attentionbox}{複数サイトの同時起動}
+  Apacheは前述の通り仮想ホストによりサーバー処理を行っている。そのため1つのサーバーから複数のサイトを運用することが可能である。しかし、ローカル上で複数サイトのアクセス処理のためにはDNSサーバーによるポート転送が必要となるため今回は説明を省く。どうしても試してみたい場合は以下の参考サイトを参照するとよい。\\
+  77Lifeworkベータ版, Apacheを複数起動（複数インスタンス構成）する, \url{https://www.77-lifework.com/entry/apache-multi}
+\end{attentionbox}
+Apacheの設定ファイルで記述可能な設定項目をディレクティブという。以下に主なディレクティブを示す。
+\begin{itemize}
+  \item ServerRoot : 設定ファイルなどを配置するトップディレクトリ（/etc/apache2）
+  \item Listen : Apacheが受け付けるポート（80番）
+  \item User : Apacheが実行されるユーザー（www-data）
+  \item Group : Apacheが実行されるグループ（www-data）
+  \item ServerAdmin : Apacheサーバーの管理者（webmaster@localhost）
+  \item DocumentRoot : Webページを配置するディレクトリ（/var/www/html）
+  \item DirectoryIndex : ディレクトリへのアクセス時に表示するファイル名（index.html）
+\end{itemize}
+以降では一般的なサーバーにおける変更点としてDocumentRoot、DirectoryIndexの変更を行う。また、Listenの変更を行う可能性もあるためそれについても説明する。
+
+\subsubsection{DocumentRootとDirectoryIndexについて}
+DocumentRootはWebページを配置するディレクトリを指定するディレクティブである。デフォルトでは/var/www/htmlが指定されている。ここで指定するディレクトリは「http://<サーバーIP>/」にアクセスした際に表示されるページが配置されるディレクトリである。このディレクトリの中にあるDirectoryIndexで指定したファイルが「http://<サーバーIP>/」にアクセスした際に表示されるファイルとなる。
+DirectoryIndexはディレクトリへのアクセス時に表示するファイル名を指定するディレクティブである。デフォルトではindex.htmlが指定されている。このファイルが存在しない場合はindex.php、index.cgi、index.pl、index.xhtml、index.htmの順に表示される。
+
+\subsubsection{仮想ホストの作成}
+Apacheのインストール後は「000-default.conf」が仮想ホストとして設定されている。別の仮想ホストとして設定を行う。仮想ホストの設定は「/etc/apache2/sites-available/」ディレクトリ内に設定ファイルを作成する。ファイル名は任意であるが、一般的には「サイト名.conf」とする。ここでは「.conf」とする。
+\begin{hosokubox}{仮想ホストの設定について}
+  デフォルトで用意されているファイルを使用する場合は「000-default.conf」編集して使用してもよい。また、設定をゼロから記述するのが大変な場合はcpコマンドを使用する方法などもある。
+\end{hosokubox}
+\begin{commandbox}{terminal:仮想ホストの設定ファイルの作成}
+  \begin{verbatim}
+  $ sudo touch /etc/apache2/sites-available/{ファイル名}.conf\end{verbatim}
+\end{commandbox}
+作成したファイルに以下の最小構成の設定を記述する。DocumentRootとDirectoryIndexは先ほど説明したとおりに設定を行う。
+\begin{commandbox}{/etc/apache2/sites-available/{ファイル名}.conf}
+  \begin{verbatim}
+  <VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot {ディレクトリ名}
+    DirectoryIndex {ファイル名}
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+  </VirtualHost>\end{verbatim}
+\end{commandbox}
+\begin{hosokubox}{APACHE\_LOG\_DIRについて}
+  APACHE\_LOG\_DIRはApacheのログファイルを保存するディレクトリを指定する環境変数である。デフォルトでは/var/log/apache2に設定されている。この変数の変更にはapache2.confファイルを編集する必要がある。
+\end{hosokubox}
+変更後、DocumentRootに指定したディレクトリがない場合は作成し、DirectoryIndexを作成する。
+\begin{commandbox}{terminal:ディレクトリの作成}
+  \begin{verbatim}
+  $ sudo mkdir {ディレクトリ名}
+  $ sudo touch {ディレクトリ名}/{ファイル名}\end{verbatim}
+\end{commandbox}
+作成後、設定ファイルの有効化にはa2ensiteコマンドを使用し、仮想ホストの有効化を行う必要がある。
+\begin{commandbox}{terminal:仮想ホストの有効化}
+  \begin{verbatim}
+  $ sudo a2ensite {ファイル名}.conf
+  $ sudo systemctl restart apache2\end{verbatim}
+\end{commandbox}
+Apacheの再起動後systemctlコマンドを使用してApacheの状態を確認する。（sudo systemctl status apache2）。起動が確認出来たら、ブラウザを使用してhttp://localhost/にアクセスすることで新たに作成した仮想ホストのページが表示される。
+\begin{attentionbox}{仮想ホストの無効化}
+  仮想ホストの無効化を行わない場合、localhostにアクセスした際前述で作成したページにアクセスできない場合がある。また、サーバーへの負荷がかかってしまう。そのため、不要な仮想ホストの無効化を行うことが必要である。一方、仮想ホストを同時に立てる場合は別の手段となる。
+  \begin{commandbox}{仮想ホストの無効化}
+    \verb|$ sudo a2dissite {ファイル名}.conf|\\
+    \verb|$ sudo systemctl restart apache2|
+  \end{commandbox}
+\end{attentionbox}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=14cm]{images/linux-server/12_3_2-1apache-test-conf.png}
+  \caption{新たに作成した仮想ホストのページ}
+\end{figure}
+\subsubsection{ポートの変更}
+ポートの変更には「Listen」ディレクティブを使用する。デフォルトでは80番ポートが指定されている。ポートの変更は以下のように行う。
+\begin{commandbox}{/etc/apache2/ports.conf}
+  \begin{verbatim}
+  Listen 8080\end{verbatim}
+\end{commandbox}
+変更後、Apacheの再起動を行うことでポートの変更が適用される。
+\subsection{ファイアウオールの設定}
+SSHの設定の際さらっと出てきていたがここでもファイアウォールの設定を行う。
+\begin{johobox}{ファイアウォールについて}
+  ファイアウォールは、ネットワーク上で通信を制御するための装置やソフトウェアのことをいう。ファイアウォールは、外部からの不正アクセスや攻撃を防ぐために使用される。この機能はWindowsやmacOSなどのOSにも搭載されている。今回はufwを使用してファイアウォールの設定を行う。ufwはUncomplicated Firewallの略で、比較的簡単に設定を行うことができる。
+\end{johobox}
+\begin{commandbox}{ファイアウォールの有効化}
+  \begin{verbatim}
+  $ sudo ufw enable
+  $ sudo ufw allow Apache
+  $ sudo ufw status\end{verbatim}
+\end{commandbox}
+\begin{hosokubox}{ポート開放について}
+  ファイアウォールの設定においては、ポートの開放が重要である。ポートの開放を行わない場合、外部からのアクセスが拒否されるため、Webサーバーにアクセスすることができない。ポートの開放は「sudo ufw allow ポート番号」コマンドを使用して行う。
+\end{hosokubox}
+\begin{commandbox}{ポート開放:80と8080の開放}
+  \begin{verbatim}
+  $ sudo ufw allow 80/tcp
+  $ sudo ufw allow 8080/tcp\end{verbatim}
+\end{commandbox}
+
+\subsection{パスワード認証}
+通常はアクセスした人全員がWebページの閲覧が可能である。しかし、特定のユーザーのみ閲覧可能なページの作成も可能となっている。それらの実現には一般的にユーザー名、パスワードによる認証が用いられる。その中で最も簡単な認証方法として基本認証がある。基本認証はユーザー名とパスワードを使用して認証を行う方法である。基本認証はApacheの設定ファイルに記述することで設定を行うことができる。
+\begin{hosokubox}{apache2-utilsについて}
+  認証を行うためのパッケージであるapache2-utilsは最新バージョンの場合インストールに含まれている。しかし、環境やバージョンなどによって含まれない場合もあるため念のためインストールをすることを推奨する。
+\end{hosokubox}
+\begin{commandbox}{apache2-utilsのインストール}
+  \verb|$ sudo apt install apache2-utils|
+\end{commandbox}
+\subsubsection{htpasswdの作成}
+インストールした後、apache2-utilsに含まれるhtpasswdコマンドを使用してユーザー名とパスワードを記述したファイルを作成する。初回の登録時には「-c」オプションを使用する。
+\begin{commandbox}{htpasswdの作成}
+  \begin{verbatim}
+  $ sudo htpasswd -c /etc/apache2/.htpasswd {ユーザー名}  # 初回のみ
+  $ sudo htpasswd /etc/apache2/.htpasswd {ユーザー名} # 2回目以降
+  New password: {パスワード}
+  Re-type new password: {パスワード}\end{verbatim}
+\end{commandbox}
+ユーザー登録の完了後、認証を利用する仮想ホストの設定ファイルに以下の設定を追加する。
+\begin{commandbox}{/etc/apache2/sites-available/{ファイル名}.conf}
+  \begin{verbatim}
+  <Directory {認証を利用したいディレクトリパス}>
+    AuthType Basic
+    AuthName "Restricted Content"
+    AuthUserFile /etc/apache2/.htpasswd
+    Require valid-user
+  </Directory>\end{verbatim}
+\end{commandbox}
+設定後、Apacheの再起動を行うことで設定が適用される。
+\begin{attentionbox}{認証を利用したいディレクトリについて}
+  指定したディレクトリ以下にあるもの全てに認証がかかるようになるため注意が必要である。
+\end{attentionbox}
+\subsection{アクセスログ}
+アクセスログはWebサーバーにアクセスした際の情報を記録するログファイルである。これが読めるようになることでサーバーの状況を理解し、不正アクセスなどがあった際、おかしな部分として気づくことができる。Apacheのアクセスログのデフォルトは/var/log/apache2/access.logである。アクセスログから読み取れるといいものをいかに挙げる。
+\begin{itemize}
+  \item リクエストさいれたURL
+  \item アクセス元のIPアドレス
+  \item ユーザーエージェント
+  \item ステータスコード
+  \item リクエストの日時
+\end{itemize}
+アクセスログの設定は「/etc/apache2/apache2.conf」ファイルに記述されている。以下にアクセスログの設定例を示す。
 \section{終わりに}
 
 
