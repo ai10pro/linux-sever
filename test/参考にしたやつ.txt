@@ -34,3 +34,5 @@ https://qiita.com/kooohei/items/b0931ae210911cc52adc
 https://engineer-ninaritai.com/apache-log-directory/
 
 
+::1 - - [10/Feb/2025:22:30:31 +0900] "GET / HTTP/1.1" 200 2170 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+::1 - - [10/Feb/2025:22:31:04 +0900] "GET / HTTP/1.1" 200 2170 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0"
